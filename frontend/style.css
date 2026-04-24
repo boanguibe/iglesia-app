@@ -1,0 +1,446 @@
+/* ─── Variables de color ──────────────────────────────────────────── */
+:root {
+  --azul:        #3b82f6;
+  --azul-oscuro: #1d4ed8;
+  --azul-claro:  #eff6ff;
+  --texto:       #1e293b;
+  --texto-suave: #64748b;
+  --borde:       #e2e8f0;
+  --fondo:       #f1f5f9;
+  --blanco:      #ffffff;
+  --verde:       #10b981;
+  --rojo:        #ef4444;
+  --naranja:     #f59e0b;
+}
+
+/* ─── Reset y base ───────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--fondo);
+  color: var(--texto);
+  min-height: 100vh;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────── */
+header {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  color: white;
+  padding: 20px 40px;
+  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+}
+
+.header-contenido {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-icono {
+  font-size: 36px;
+}
+
+.header-texto h1 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.header-texto p {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+/* ─── Main ───────────────────────────────────────────────────────── */
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ─── Tarjetas de resumen ────────────────────────────────────────── */
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.tarjeta-resumen {
+  background: var(--blanco);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border-top: 4px solid var(--azul);
+}
+
+.resumen-icono {
+  font-size: 24px;
+}
+
+.resumen-numero {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--azul);
+}
+
+.resumen-label {
+  font-size: 12px;
+  color: var(--texto-suave);
+  text-align: center;
+}
+
+/* ─── Tarjeta general ────────────────────────────────────────────── */
+.tarjeta {
+  background: var(--blanco);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.tarjeta-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--borde);
+}
+
+.tarjeta-header h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--texto);
+}
+
+/* ─── Formulario ─────────────────────────────────────────────────── */
+.formulario-card .formulario-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 24px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo-completo {
+  grid-column: 1 / -1;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--texto-suave);
+}
+
+input {
+  padding: 10px 14px;
+  border: 1.5px solid var(--borde);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  color: var(--texto);
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--azul);
+}
+
+/* ─── Total display ──────────────────────────────────────────────── */
+.total-display {
+  background: var(--azul-claro);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.total-display span {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--azul);
+}
+
+/* ─── Botones del formulario ─────────────────────────────────────── */
+.botones {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px 24px;
+}
+
+.btn-guardar {
+  flex: 1;
+  padding: 12px;
+  background-color: var(--azul);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-guardar:hover { background-color: var(--azul-oscuro); }
+
+.btn-guardar.editando { background-color: var(--naranja); }
+.btn-guardar.editando:hover { background-color: #d97706; }
+
+.btn-cancelar {
+  flex: 1;
+  padding: 12px;
+  background-color: var(--blanco);
+  color: var(--texto-suave);
+  border: 1.5px solid var(--borde);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  display: none;
+  transition: background-color 0.2s;
+}
+
+.btn-cancelar:hover { background-color: var(--fondo); }
+
+.mensaje-error {
+  color: var(--rojo);
+  font-size: 13px;
+  padding: 0 24px 12px;
+  display: none;
+}
+
+/* ─── Tabla ──────────────────────────────────────────────────────── */
+.tabla-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  background-color: var(--fondo);
+  color: var(--texto-suave);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--borde);
+}
+
+td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--borde);
+  color: var(--texto);
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background-color: var(--azul-claro); }
+tr.editando-fila td { background-color: #fef9c3 !important; }
+
+.sin-registros {
+  text-align: center;
+  color: var(--texto-suave);
+  padding: 40px;
+  font-size: 14px;
+}
+
+/* ─── Botones de la tabla ────────────────────────────────────────── */
+.btn-editar {
+  padding: 6px 12px;
+  background-color: var(--azul-claro);
+  color: var(--azul);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  margin-right: 6px;
+  transition: background-color 0.2s;
+}
+
+.btn-editar:hover { background-color: var(--azul); color: white; }
+
+.btn-eliminar {
+  padding: 6px 12px;
+  background-color: #fef2f2;
+  color: var(--rojo);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-eliminar:hover { background-color: var(--rojo); color: white; }
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+
+  header { padding: 16px 20px; }
+
+  .resumen { grid-template-columns: 1fr; }
+
+  .formulario-card .formulario-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .campo-completo { grid-column: 1; }
+}
+
+
+/* ─── Encabezado de la tabla con botón exportar ──────────────────── */
+.tabla-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-excel {
+  padding: 8px 16px;
+  background-color: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-excel:hover {
+  background-color: #15803d;
+}
+
+.btn-excel:disabled {
+  background-color: #86efac;
+  cursor: not-allowed;
+}
+
+
+
+/* ─── Botón imprimir ─────────────────────────────────────────────── */
+.tabla-acciones {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-imprimir {
+  padding: 8px 16px;
+  background-color: #7c3aed;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-imprimir:hover { background-color: #6d28d9; }
+
+/* ─── Estilos de impresión ───────────────────────────────────────── */
+@media print {
+
+  /* Ocultar todo lo que no va en el informe */
+  .formulario-card,
+  .tabla-acciones,
+  .btn-editar,
+  .btn-eliminar,
+  th:last-child,
+  td:last-child {
+    display: none !important;
+  }
+
+  /* Fondo blanco para toda la página */
+  body {
+    background-color: white;
+    padding: 0;
+  }
+
+  /* Header sin gradiente para que imprima bien */
+  header {
+    background: #1d4ed8 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Tarjetas de resumen en una fila */
+  .resumen {
+    grid-template-columns: repeat(3, 1fr);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Bordes visibles en la tabla */
+  table {
+    border: 1px solid #e2e8f0;
+  }
+
+  th {
+    background-color: #f1f5f9 !important;
+    color: #1e293b !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  td {
+    border: 1px solid #e2e8f0;
+  }
+
+  /* Evitar que las filas se corten entre páginas */
+  tr {
+    page-break-inside: avoid;
+  }
+
+  /* Fecha de emisión visible solo al imprimir */
+  .fecha-emision {
+    display: block !important;
+  }
+
+  /* Sombras no se ven bien impresas */
+  .tarjeta,
+  .tarjeta-resumen {
+    box-shadow: none;
+    border: 1px solid #e2e8f0;
+  }
+
+}
+
+/* Fecha de emisión oculta en pantalla, visible al imprimir */
+.fecha-emision {
+  display: none;
+  font-size: 12px;
+  color: #64748b;
+  text-align: center;
+  padding: 8px 0;
+  font-family: 'Poppins', sans-serif;
+}

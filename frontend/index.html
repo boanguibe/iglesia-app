@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>Registro de Asistencia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Librería SheetJS para exportar a Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  </head>
+  <body>
+
+    <!-- HEADER -->
+    <header>
+      <div class="header-contenido">
+        <div class="header-icono">✝️</div>
+        <div class="header-texto">
+          <h1>Registro de Asistencia</h1>
+          <p>Iglesia del Nazareno Los Lobos — Talcahuano</p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- TARJETAS DE RESUMEN -->
+      <section class="resumen">
+        <div class="tarjeta-resumen">
+          <span class="resumen-icono">📅</span>
+          <span class="resumen-numero" id="total-cultos">0</span>
+          <span class="resumen-label">Cultos registrados</span>
+        </div>
+        <div class="tarjeta-resumen">
+          <span class="resumen-icono">👥</span>
+          <span class="resumen-numero" id="total-personas">0</span>
+          <span class="resumen-label">Total asistentes</span>
+        </div>
+        <div class="tarjeta-resumen">
+          <span class="resumen-icono">📊</span>
+          <span class="resumen-numero" id="promedio-asistencia">0</span>
+          <span class="resumen-label">Promedio por culto</span>
+        </div>
+      </section>
+
+      <!-- FORMULARIO -->
+      <div class="tarjeta formulario-card">
+
+        <div class="tarjeta-header">
+          <h2 id="titulo-formulario">Nueva Entrada</h2>
+        </div>
+
+        <div class="formulario-grid">
+
+          <div class="campo campo-completo">
+            <label>Fecha del culto</label>
+            <input type="date" id="fecha">
+          </div>
+
+          <div class="campo">
+            <label>Hombres</label>
+            <input type="number" id="hombres" min="0" placeholder="0" oninput="calcularTotal()">
+          </div>
+
+          <div class="campo">
+            <label>Mujeres</label>
+            <input type="number" id="mujeres" min="0" placeholder="0" oninput="calcularTotal()">
+          </div>
+
+          <div class="campo">
+            <label>Niños</label>
+            <input type="number" id="ninos" min="0" placeholder="0" oninput="calcularTotal()">
+          </div>
+
+          <div class="campo total-campo">
+            <label>Total asistentes</label>
+            <div class="total-display">
+              <span id="total">0</span>
+            </div>
+          </div>
+
+          <div class="campo campo-completo">
+            <label>Predicador</label>
+            <input type="text" id="predicador" placeholder="Nombre del predicador">
+          </div>
+
+          <div class="campo campo-completo">
+            <label>Tema del mensaje</label>
+            <input type="text" id="mensaje" placeholder="Título o tema del mensaje">
+          </div>
+
+        </div>
+
+        <p class="mensaje-error" id="error">⚠️ Por favor completa todos los campos.</p>
+
+        <div class="botones">
+          <button class="btn-guardar" id="btn-principal" onclick="guardarRegistro()">
+            💾 Guardar Registro
+          </button>
+          <button class="btn-cancelar" id="btn-cancelar" onclick="cancelarEdicion()">
+            Cancelar
+          </button>
+        </div>
+
+      </div>
+
+      <!-- TABLA -->
+      <div class="tarjeta">
+
+        <div class="tarjeta-header tabla-header">
+          <h2>📋 Registros Guardados</h2>
+          <div class="tabla-acciones">
+            <button class="btn-excel" onclick="exportarExcel()">📥 Exportar Excel</button>
+            <button class="btn-imprimir" onclick="imprimirInforme()">🖨️ Imprimir Informe</button>
+          </div>
+        </div>
+
+        <div class="tabla-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Hombres</th>
+                <th>Mujeres</th>
+                <th>Niños</th>
+                <th>Total</th>
+                <th>Predicador</th>
+                <th>Mensaje</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpo-tabla">
+              <tr>
+                <td colspan="8" class="sin-registros">No hay registros aún.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </main>
+
+    <script src="app.js"></script>
+
+  </body>
+</html>
