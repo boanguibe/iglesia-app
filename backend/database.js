@@ -17,6 +17,7 @@ db.exec(`
     mujeres    INTEGER DEFAULT 0,
     ninos      INTEGER DEFAULT 0,
     total      INTEGER DEFAULT 0,
+    dirigido_por TEXT   NOT NULL,
     predicador TEXT    NOT NULL,
     mensaje    TEXT    NOT NULL
   )
@@ -32,8 +33,8 @@ function obtenerTodos() {
 // CREAR un nuevo registro
 function crear(registro) {
   const stmt = db.prepare(`
-    INSERT INTO registros (fecha, hombres, mujeres, ninos, total, predicador, mensaje)
-    VALUES (@fecha, @hombres, @mujeres, @ninos, @total, @predicador, @mensaje)
+    INSERT INTO registros (fecha, hombres, mujeres, ninos, total, dirigido_por, predicador, mensaje)
+    VALUES (@fecha, @hombres, @mujeres, @ninos, @total, @dirigido_por, @predicador, @mensaje)
   `)
   return stmt.run(registro)
 }
@@ -47,6 +48,7 @@ function actualizar(id, registro) {
         mujeres = @mujeres,
         ninos = @ninos,
         total = @total,
+        dirigido_por = @dirigido_por,
         predicador = @predicador,
         mensaje = @mensaje
     WHERE id = @id

@@ -30,10 +30,11 @@ async function guardarRegistro() {
   const hombres    = Number(document.getElementById("hombres").value)
   const mujeres    = Number(document.getElementById("mujeres").value)
   const ninos      = Number(document.getElementById("ninos").value)
+  const dirigido_por = document.getElementById("dirigido_por").value
   const predicador = document.getElementById("predicador").value
   const mensaje    = document.getElementById("mensaje").value
 
-  if (!fecha || !predicador || !mensaje) {
+  if (!fecha || !dirigido_por || !predicador || !mensaje) {
     document.getElementById("error").style.display = "block"
     return
   }
@@ -43,7 +44,7 @@ async function guardarRegistro() {
   const registro = {
     fecha, hombres, mujeres, ninos,
     total: hombres + mujeres + ninos,
-    predicador, mensaje
+    dirigido_por, predicador, mensaje
   }
 
   try {
@@ -85,6 +86,7 @@ function editarRegistro(indice) {
   document.getElementById("hombres").value     = r.hombres
   document.getElementById("mujeres").value     = r.mujeres
   document.getElementById("ninos").value       = r.ninos
+  document.getElementById("dirigido_por").value = r.dirigido_por
   document.getElementById("predicador").value  = r.predicador
   document.getElementById("mensaje").value     = r.mensaje
   document.getElementById("total").textContent = r.total
@@ -159,6 +161,7 @@ function actualizarTabla() {
         <td>${r.mujeres}</td>
         <td>${r.ninos}</td>
         <td><strong>${r.total}</strong></td>
+        <td>${r.dirigido_por}</td>
         <td>${r.predicador}</td>
         <td>${r.mensaje}</td>
         <td>
@@ -194,12 +197,12 @@ function exportarExcel() {
   }
 
   let datos = [
-    ["Fecha", "Hombres", "Mujeres", "Niños", "Total", "Predicador", "Tema del mensaje"]
+    ["Fecha", "Hombres", "Mujeres", "Niños", "Total",  "Dirigido por", "Predicador", "Tema del mensaje"]
   ]
 
   for (let i = 0; i < registros.length; i++) {
     const r = registros[i]
-    datos.push([r.fecha, r.hombres, r.mujeres, r.ninos, r.total, r.predicador, r.mensaje])
+    datos.push([r.fecha, r.hombres, r.mujeres, r.ninos, r.total, r.dirigido_por, r.predicador, r.mensaje])
   }
 
   let totalGeneral = 0
@@ -246,6 +249,7 @@ function limpiarFormulario() {
   document.getElementById("hombres").value     = ""
   document.getElementById("mujeres").value     = ""
   document.getElementById("ninos").value       = ""
+  document.getElementById("dirigido_por").value = ""
   document.getElementById("predicador").value  = ""
   document.getElementById("mensaje").value     = ""
   document.getElementById("total").textContent = "0"
