@@ -1,7 +1,19 @@
 const Database = require("better-sqlite3")
 const path     = require("path")
+const fs       = require("fs")
 
-const db = new Database(path.join(__dirname, "../iglesia.db"))
+// En Railway usamos el volumen persistente /app/data
+// En local usamos la carpeta raíz del proyecto
+const DB_DIR  = process.env.RAILWAY_ENVIRONMENT
+                ? "/app/data"
+                : path.join(__dirname, "..")
+
+// Crear el directorio si no existe
+if (!fs.existsSync(DB_DIR)) {
+  fs.mkdirSync(DB_DIR, { recursive: true })
+}
+
+const db = new Database(path.join(DB_DIR, "iglesia.db"))
 
 // ─── Crear la tabla si no existe ─────────────────────────────────
 db.exec(`
@@ -19,8 +31,6 @@ db.exec(`
 `)
 
 // ─── Migración: agregar columna si no existe ──────────────────────
-// Esto corre cada vez que arranca el servidor.
-// Si la columna ya existe, el catch lo ignora silenciosamente.
 try {
   db.exec("ALTER TABLE registros ADD COLUMN dirigido_por TEXT NOT NULL DEFAULT ''")
   console.log("✅ Migración aplicada: columna dirigido_por agregada")
@@ -29,7 +39,6 @@ try {
 }
 
 // ─── Funciones de la base de datos ───────────────────────────────
-
 function obtenerTodos() {
   return db.prepare("SELECT * FROM registros ORDER BY fecha DESC").all()
 }
