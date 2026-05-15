@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>Dashboard — Iglesia del Nazareno</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+
+    <!-- HEADER -->
+    <header>
+      <div class="header-contenido">
+        <div class="header-icono">✝️</div>
+        <div class="header-texto">
+          <h1>Dashboard</h1>
+          <p>Iglesia del Nazareno Los Lobos — Talcahuano</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- NAVEGACIÓN -->
+    <nav class="navegacion">
+      <a href="/" class="nav-link">📋 Registros</a>
+      <a href="/dashboard.html" class="nav-link activo">📊 Dashboard</a>
+    </nav>
+
+    <main>
+
+      <!-- TARJETAS DE RESUMEN -->
+      <section class="resumen">
+        <div class="tarjeta-resumen">
+          <span class="resumen-icono">📅</span>
+          <span class="resumen-numero" id="total-cultos">0</span>
+          <span class="resumen-label">Cultos registrados</span>
+        </div>
+        <div class="tarjeta-resumen">
+          <span class="resumen-icono">👥</span>
+          <span class="resumen-numero" id="total-personas">0</span>
+          <span class="resumen-label">Total asistentes</span>
+        </div>
+        <div class="tarjeta-resumen">
+          <span class="resumen-icono">📊</span>
+          <span class="resumen-numero" id="promedio-asistencia">0</span>
+          <span class="resumen-label">Promedio por culto</span>
+        </div>
+        <div class="tarjeta-resumen">
+          <span class="resumen-icono">🏆</span>
+          <span class="resumen-numero" id="mejor-culto">0</span>
+          <span class="resumen-label">Mayor asistencia</span>
+        </div>
+      </section>
+
+      <!-- GRÁFICOS -->
+      <div class="graficos-grid">
+
+        <!-- Gráfico de línea: asistencia en el tiempo -->
+        <div class="tarjeta grafico-card grafico-grande">
+          <div class="tarjeta-header">
+            <h2>📈 Asistencia por Culto</h2>
+          </div>
+          <div class="grafico-contenedor">
+            <canvas id="grafico-asistencia"></canvas>
+          </div>
+        </div>
+
+        <!-- Gráfico de torta: distribución -->
+        <div class="tarjeta grafico-card">
+          <div class="tarjeta-header">
+            <h2>🥧 Distribución</h2>
+          </div>
+          <div class="grafico-contenedor">
+            <canvas id="grafico-distribucion"></canvas>
+          </div>
+        </div>
+
+        <!-- Gráfico de barras: por predicador -->
+        <div class="tarjeta grafico-card grafico-grande">
+          <div class="tarjeta-header">
+            <h2>🏆 Asistencia Promedio por Predicador</h2>
+          </div>
+          <div class="grafico-contenedor">
+            <canvas id="grafico-predicadores"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+    <script src="dashboard.js"></script>
+
+  </body>
+</html>

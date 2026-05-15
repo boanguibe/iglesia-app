@@ -444,3 +444,68 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   padding: 8px 0;
   font-family: 'Poppins', sans-serif;
 }
+
+
+/* ─── Navegación ─────────────────────────────────────────────────── */
+.navegacion {
+  background-color: var(--blanco);
+  border-bottom: 1px solid var(--borde);
+  display: flex;
+  gap: 4px;
+  padding: 0 40px;
+}
+
+.nav-link {
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--texto-suave);
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.nav-link:hover {
+  color: var(--azul);
+}
+
+.nav-link.activo {
+  color: var(--azul);
+  border-bottom-color: var(--azul);
+}
+
+/* ─── Grid de gráficos ───────────────────────────────────────────── */
+.graficos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.grafico-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.grafico-grande {
+  grid-column: 1 / -1;
+}
+
+.grafico-contenedor {
+  padding: 20px;
+  flex: 1;
+}
+
+/* ─── Responsive dashboard ───────────────────────────────────────── */
+@media (max-width: 600px) {
+  .graficos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .grafico-grande {
+    grid-column: 1;
+  }
+
+  .navegacion {
+    padding: 0 16px;
+  }
+}
