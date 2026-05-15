@@ -2,18 +2,22 @@ const Database = require("better-sqlite3")
 const path     = require("path")
 const fs       = require("fs")
 
-// En Railway usamos el volumen persistente /app/data
-// En local usamos la carpeta raíz del proyecto
-const DB_DIR  = process.env.RAILWAY_ENVIRONMENT
-                ? "/app/data"
-                : path.join(__dirname, "..")
+// Railway provee RAILWAY_VOLUME_MOUNT_PATH automáticamente
+// cuando hay un volumen conectado al servicio.
+// En local, usamos la carpeta raíz del proyecto.
+const DB_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH
+               ? process.env.RAILWAY_VOLUME_MOUNT_PATH
+               : path.join(__dirname, "..")
 
 // Crear el directorio si no existe
 if (!fs.existsSync(DB_DIR)) {
   fs.mkdirSync(DB_DIR, { recursive: true })
 }
 
-const db = new Database(path.join(DB_DIR, "iglesia.db"))
+const dbPath = path.join(DB_DIR, "iglesia.db")
+console.log(`📂 Base de datos en: ${dbPath}`)
+
+const db = new Database(dbPath)
 
 // ─── Crear la tabla si no existe ─────────────────────────────────
 db.exec(`
