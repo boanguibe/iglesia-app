@@ -34,6 +34,16 @@ db.exec(`
   )
 `)
 
+// ─── Tabla de usuarios ────────────────────────────────────────────
+db.exec(`
+  CREATE TABLE IF NOT EXISTS usuarios (
+    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre   TEXT    NOT NULL,
+    email    TEXT    NOT NULL UNIQUE,
+    password TEXT    NOT NULL
+  )
+`)
+
 // ─── Migración: agregar columna si no existe ──────────────────────
 try {
   db.exec("ALTER TABLE registros ADD COLUMN dirigido_por TEXT NOT NULL DEFAULT ''")
@@ -75,4 +85,24 @@ function eliminar(id) {
   return db.prepare("DELETE FROM registros WHERE id = ?").run(id)
 }
 
-module.exports = { obtenerTodos, crear, actualizar, eliminar }
+// ─── Funciones de usuarios ────────────────────────────────────────
+function crearUsuario(nombre, email, passwordHash) {
+  const stmt = db.prepare(`
+    INSERT INTO usuarios (nombre, email, password)
+    VALUES (?, ?, ?)
+  `)
+  return stmt.run(nombre, email, passwordHash)
+}
+
+function buscarUsuarioPorEmail(email) {
+  return db.prepare("SELECT * FROM usuarios WHERE email = ?").get(email)
+}
+
+function contarUsuarios() {
+  return db.prepare("SELECT COUNT(*) as total FROM usuarios").get().total
+}
+
+module.exports = {
+  obtenerTodos, crear, actualizar, eliminar,
+  crearUsuario, buscarUsuarioPorEmail, contarUsuarios
+}
