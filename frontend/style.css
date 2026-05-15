@@ -509,3 +509,66 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
     padding: 0 16px;
   }
 }
+
+
+
+/* ─── Login ──────────────────────────────────────────────────────── */
+.body-login {
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.login-icono {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.login-header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.login-header p {
+  font-size: 13px;
+  color: var(--texto-suave);
+  margin-top: 4px;
+}
+
+/* ─── Header con usuario y cerrar sesión ─────────────────────────── */
+.header-usuario {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  font-size: 13px;
+  color: rgba(255,255,255,0.9);
+}
+
+.btn-cerrar-sesion {
+  padding: 6px 14px;
+  background-color: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-cerrar-sesion:hover {
+  background-color: rgba(255,255,255,0.25);
+}

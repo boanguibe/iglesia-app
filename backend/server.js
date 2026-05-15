@@ -1,63 +1,92 @@
-const express = require("express")
-const cors    = require("cors")
-const path    = require("path")
-const db      = require("./database")
+const express  = require("express")
+const cors     = require("cors")
+const path     = require("path")
+const db       = require("./database")
+const auth     = require("./auth")
 
 const app  = express()
 const PORT = process.env.PORT || 3000
 
-// ─── Middlewares ──────────────────────────────────────────────────
-// Middlewares son funciones que procesan cada petición antes de llegar a las rutas
+app.use(cors())
+app.use(express.json())
+app.use(express.static(path.join(__dirname, "../frontend")))
 
-app.use(cors())                    // permite peticiones desde el frontend
-app.use(express.json())            // permite leer JSON en las peticiones
-app.use(express.static(           // sirve los archivos del frontend
-  path.join(__dirname, "../frontend")
-))
+// ─── RUTAS PÚBLICAS (no requieren login) ─────────────────────────
 
-// ─── RUTAS DE LA API ──────────────────────────────────────────────
+// POST /api/login → iniciar sesión
+app.post("/api/login", async (req, res) => {
+  const { email, password } = req.body
 
-// GET /api/registros → obtener todos los registros
-app.get("/api/registros", (req, res) => {
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email y contraseña requeridos" })
+  }
+
+  const usuario = db.buscarUsuarioPorEmail(email)
+
+  if (!usuario) {
+    return res.status(401).json({ error: "Credenciales incorrectas" })
+  }
+
+  const passwordCorrecta = await auth.verificarPassword(password, usuario.password)
+
+  if (!passwordCorrecta) {
+    return res.status(401).json({ error: "Credenciales incorrectas" })
+  }
+
+  const token = auth.generarToken(usuario)
+  res.json({ token, nombre: usuario.nombre })
+})
+
+// POST /api/setup → crear el primer usuario (solo si no hay ninguno)
+app.post("/api/setup", async (req, res) => {
+  const { nombre, email, password } = req.body
+
+  if (db.contarUsuarios() > 0) {
+    return res.status(403).json({ error: "Ya existe un usuario registrado" })
+  }
+
+  const hash = await auth.hashearPassword(password)
+  db.crearUsuario(nombre, email, hash)
+  res.json({ ok: true, mensaje: "Usuario creado correctamente" })
+})
+
+// ─── RUTAS PROTEGIDAS (requieren login) ──────────────────────────
+
+app.get("/api/registros",      auth.requireAuth, (req, res) => {
   try {
-    const registros = db.obtenerTodos()
-    res.json(registros)
-  } catch (error) {
+    res.json(db.obtenerTodos())
+  } catch (e) {
     res.status(500).json({ error: "Error al obtener registros" })
   }
 })
 
-// POST /api/registros → crear un nuevo registro
-app.post("/api/registros", (req, res) => {
+app.post("/api/registros",     auth.requireAuth, (req, res) => {
   try {
     const resultado = db.crear(req.body)
     res.json({ ok: true, id: resultado.lastInsertRowid })
-  } catch (error) {
+  } catch (e) {
     res.status(500).json({ error: "Error al crear registro" })
   }
 })
 
-// PUT /api/registros/:id → actualizar un registro existente
-app.put("/api/registros/:id", (req, res) => {
+app.put("/api/registros/:id",  auth.requireAuth, (req, res) => {
   try {
     db.actualizar(req.params.id, req.body)
     res.json({ ok: true })
-  } catch (error) {
+  } catch (e) {
     res.status(500).json({ error: "Error al actualizar registro" })
   }
 })
 
-// DELETE /api/registros/:id → eliminar un registro
-app.delete("/api/registros/:id", (req, res) => {
+app.delete("/api/registros/:id", auth.requireAuth, (req, res) => {
   try {
     db.eliminar(req.params.id)
     res.json({ ok: true })
-  } catch (error) {
+  } catch (e) {
     res.status(500).json({ error: "Error al eliminar registro" })
   }
 })
 
-// ─── Iniciar el servidor ──────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en http://localhost:${PORT}`)
 })

@@ -1,3 +1,7 @@
+// Al inicio de app.js y dashboard.js
+requireLogin()
+mostrarUsuario()
+
 // ─── Estado de la aplicación ──────────────────────────────────────
 let registros      = []
 let indiceEditando = -1
@@ -6,7 +10,7 @@ let idEditando     = null   // NUEVO: guardamos el id real de la BD
 // ─── Cargar registros desde el servidor ──────────────────────────
 async function cargarRegistros() {
   try {
-    const respuesta = await fetch("/api/registros")
+    const respuesta = await fetchAuth("/api/registros")
     registros       = await respuesta.json()
     actualizarTabla()
     actualizarResumen()
@@ -51,7 +55,7 @@ async function guardarRegistro() {
 
     if (idEditando === null) {
       // ── Modo nuevo: POST a la API ────────────────────────────
-      await fetch("/api/registros", {
+      await fetchAuth("/api/registros", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify(registro)
@@ -59,7 +63,7 @@ async function guardarRegistro() {
 
     } else {
       // ── Modo edición: PUT a la API ───────────────────────────
-      await fetch(`/api/registros/${idEditando}`, {
+      await fetchAuth(`/api/registros/${idEditando}`, {
         method:  "PUT",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify(registro)
@@ -107,7 +111,7 @@ async function eliminarRegistro(indice) {
   const id = registros[indice].id
 
   try {
-    await fetch(`/api/registros/${id}`, { method: "DELETE" })
+    await fetchAuth(`/api/registros/${id}`, { method: "DELETE" })
     await cargarRegistros()
   } catch (error) {
     console.error("Error al eliminar:", error)

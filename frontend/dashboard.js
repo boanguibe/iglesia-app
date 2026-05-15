@@ -1,3 +1,7 @@
+// Al inicio de app.js y dashboard.js
+requireLogin()
+mostrarUsuario()
+
 // ─── Variables para los gráficos ──────────────────────────────────
 // Las guardamos para poder destruirlas antes de redibujar
 let graficoAsistencia    = null
@@ -7,7 +11,7 @@ let graficoPredicadores  = null
 // ─── Cargar datos y construir todo ────────────────────────────────
 async function iniciarDashboard() {
   try {
-    const respuesta = await fetch("/api/registros")
+    const respuesta = await fetchAuth("/api/registros")
     const registros = await respuesta.json()
 
     if (registros.length === 0) {
