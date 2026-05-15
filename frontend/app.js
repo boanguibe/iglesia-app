@@ -259,5 +259,111 @@ function limpiarFormulario() {
   document.getElementById("total").textContent = "0"
 }
 
+
+
+// ─── Aplicar filtros ──────────────────────────────────────────────
+function aplicarFiltros() {
+  const texto  = document.getElementById("filtro-texto").value.toLowerCase().trim()
+  const desde  = document.getElementById("filtro-desde").value
+  const hasta  = document.getElementById("filtro-hasta").value
+
+  // Filtramos el array completo de registros
+  let resultados = registros.filter(r => {
+
+    // Filtro por texto: busca en predicador, dirigido_por y mensaje
+    const coincideTexto = texto === "" || (
+      r.predicador.toLowerCase().includes(texto)   ||
+      r.dirigido_por.toLowerCase().includes(texto) ||
+      r.mensaje.toLowerCase().includes(texto)
+    )
+
+    // Filtro por fecha desde
+    const coincideDesde = desde === "" || r.fecha >= desde
+
+    // Filtro por fecha hasta
+    const coincideHasta = hasta === "" || r.fecha <= hasta
+
+    // Solo incluye el registro si cumple TODOS los filtros
+    return coincideTexto && coincideDesde && coincideHasta
+  })
+
+  // Actualiza la tabla con los resultados filtrados
+  actualizarTablaFiltrada(resultados, texto)
+
+  // Muestra el contador de resultados
+  const infoEl = document.getElementById("resultados-info")
+  const hayFiltros = texto !== "" || desde !== "" || hasta !== ""
+
+  if (hayFiltros) {
+    infoEl.style.display = "block"
+    document.getElementById("texto-resultados").textContent =
+      `${resultados.length} resultado${resultados.length !== 1 ? "s" : ""} encontrado${resultados.length !== 1 ? "s" : ""} de ${registros.length} registros`
+  } else {
+    infoEl.style.display = "none"
+  }
+}
+
+// ─── Dibujar tabla con resultados filtrados ───────────────────────
+function actualizarTablaFiltrada(lista, textoBusqueda = "") {
+  const tbody = document.getElementById("cuerpo-tabla")
+  tbody.innerHTML = ""
+
+  if (lista.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9" class="sin-registros">
+          🔍 No se encontraron registros con esos filtros.
+        </td>
+      </tr>`
+    return
+  }
+
+  for (let i = 0; i < lista.length; i++) {
+    const r          = lista[i]
+    const indiceReal = registros.findIndex(reg => reg.id === r.id)
+    const filaActiva = (indiceReal === indiceEditando) ? "editando-fila" : ""
+
+    // Resalta el texto buscado en los campos de texto
+    const predicador  = resaltarTexto(r.predicador,  textoBusqueda)
+    const dirigidoPor = resaltarTexto(r.dirigido_por, textoBusqueda)
+    const mensaje     = resaltarTexto(r.mensaje,      textoBusqueda)
+
+    tbody.innerHTML += `
+      <tr class="${filaActiva}">
+        <td>${r.fecha}</td>
+        <td>${r.hombres}</td>
+        <td>${r.mujeres}</td>
+        <td>${r.ninos}</td>
+        <td><strong>${r.total}</strong></td>
+        <td>${dirigidoPor}</td>
+        <td>${predicador}</td>
+        <td>${mensaje}</td>
+        <td>
+          <button class="btn-editar"   onclick="editarRegistro(${indiceReal})">✏️ Editar</button>
+          <button class="btn-eliminar" onclick="eliminarRegistro(${indiceReal})">🗑️ Eliminar</button>
+        </td>
+      </tr>
+    `
+  }
+}
+
+// ─── Resalta el texto buscado dentro de un string ─────────────────
+function resaltarTexto(texto, busqueda) {
+  if (!busqueda) return texto
+  const regex = new RegExp(`(${busqueda})`, "gi")
+  return texto.replace(regex, '<span class="resaltado">$1</span>')
+}
+
+// ─── Limpiar todos los filtros ────────────────────────────────────
+function limpiarFiltros() {
+  document.getElementById("filtro-texto").value = ""
+  document.getElementById("filtro-desde").value = ""
+  document.getElementById("filtro-hasta").value = ""
+  document.getElementById("resultados-info").style.display = "none"
+  actualizarTabla()
+}
+
+
+
 // ─── Arranque ─────────────────────────────────────────────────────
 cargarRegistros()

@@ -125,9 +125,50 @@
         <div class="tarjeta-header tabla-header">
           <h2>📋 Registros Guardados</h2>
           <div class="tabla-acciones">
-            <button class="btn-excel" onclick="exportarExcel()">📥 Exportar Excel</button>
+            <button class="btn-excel"    onclick="exportarExcel()">📥 Exportar Excel</button>
             <button class="btn-imprimir" onclick="imprimirInforme()">🖨️ Imprimir Informe</button>
           </div>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filtros-container">
+
+          <div class="filtro-grupo">
+            <label>🔍 Buscar</label>
+            <input
+              type="text"
+              id="filtro-texto"
+              placeholder="Predicador, dirigido por o mensaje..."
+              oninput="aplicarFiltros()">
+          </div>
+
+          <div class="filtro-grupo">
+            <label>📅 Desde</label>
+            <input
+              type="date"
+              id="filtro-desde"
+              onchange="aplicarFiltros()">
+          </div>
+
+          <div class="filtro-grupo">
+            <label>📅 Hasta</label>
+            <input
+              type="date"
+              id="filtro-hasta"
+              onchange="aplicarFiltros()">
+          </div>
+
+          <div class="filtro-grupo filtro-boton">
+            <button class="btn-limpiar-filtros" onclick="limpiarFiltros()">
+              ✕ Limpiar filtros
+            </button>
+          </div>
+
+        </div>
+
+        <!-- CONTADOR DE RESULTADOS -->
+        <div class="resultados-info" id="resultados-info" style="display:none">
+          <span id="texto-resultados"></span>
         </div>
 
         <div class="tabla-wrapper">
@@ -147,7 +188,7 @@
             </thead>
             <tbody id="cuerpo-tabla">
               <tr>
-                <td colspan="8" class="sin-registros">No hay registros aún.</td>
+                <td colspan="9" class="sin-registros">No hay registros aún.</td>
               </tr>
             </tbody>
           </table>

@@ -572,3 +572,81 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 .btn-cerrar-sesion:hover {
   background-color: rgba(255,255,255,0.25);
 }
+
+
+/* ─── Filtros ────────────────────────────────────────────────────── */
+.filtros-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 12px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--borde);
+  background-color: #fafbfc;
+}
+
+.filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filtro-grupo label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filtro-grupo input {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.filtro-boton {
+  justify-content: flex-end;
+}
+
+.btn-limpiar-filtros {
+  padding: 8px 14px;
+  background-color: var(--blanco);
+  color: var(--texto-suave);
+  border: 1.5px solid var(--borde);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-self: flex-end;
+}
+
+.btn-limpiar-filtros:hover {
+  background-color: #fee2e2;
+  color: var(--rojo);
+  border-color: var(--rojo);
+}
+
+/* ─── Contador de resultados ─────────────────────────────────────── */
+.resultados-info {
+  padding: 10px 24px;
+  background-color: var(--azul-claro);
+  border-bottom: 1px solid var(--borde);
+  font-size: 13px;
+  color: var(--azul);
+  font-weight: 500;
+}
+
+/* ─── Texto resaltado en búsqueda ────────────────────────────────── */
+.resaltado {
+  background-color: #fef08a;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+/* ─── Responsive filtros ─────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .filtros-container {
+    grid-template-columns: 1fr;
+  }
+}
