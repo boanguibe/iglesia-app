@@ -11,6 +11,16 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static(path.join(__dirname, "../frontend")))
 
+// Archivos PWA — deben servirse desde la raíz
+app.get("/manifest.json", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/manifest.json"))
+})
+
+app.get("/sw.js", (req, res) => {
+  res.setHeader("Service-Worker-Allowed", "/")
+  res.sendFile(path.join(__dirname, "../frontend/sw.js"))
+})
+
 // ─── RUTAS PÚBLICAS (no requieren login) ─────────────────────────
 
 // POST /api/login → iniciar sesión

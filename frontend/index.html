@@ -6,6 +6,13 @@
     <link rel="stylesheet" href="style.css">
     <!-- Librería SheetJS para exportar a Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1d4ed8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Iglesia App">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
   </head>
   <body>
 
@@ -200,6 +207,17 @@
 
     <script src="auth.js"></script>
     <script src="app.js"></script>
+
+    <!-- Registrar Service Worker -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js")
+            .then(() => console.log("✅ Service Worker registrado"))
+            .catch(err => console.log("❌ Error SW:", err))
+        })
+      }
+    </script>
 
   </body>
 </html>
