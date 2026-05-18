@@ -1,17 +1,20 @@
+require("dotenv").config()   // ← agrega esta línea al inicio
 const express  = require("express")
 const cors     = require("cors")
 const path     = require("path")
 const db       = require("./database")
 const auth     = require("./auth")
+const { Resend } = require("resend")
 
-const app  = express()
-const PORT = process.env.PORT || 3000
+const app    = express()
+const PORT   = process.env.PORT || 3000
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 app.use(cors())
 app.use(express.json())
 app.use(express.static(path.join(__dirname, "../frontend")))
 
-// Archivos PWA — deben servirse desde la raíz
+// Archivos PWA
 app.get("/manifest.json", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/manifest.json"))
 })
@@ -21,48 +24,110 @@ app.get("/sw.js", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/sw.js"))
 })
 
-// ─── RUTAS PÚBLICAS (no requieren login) ─────────────────────────
+// ─── Función para enviar email de notificación ────────────────────
+async function enviarNotificacion(registro) {
+  try {
+    await resend.emails.send({
+      from:    "Iglesia App <onboarding@resend.dev>",
+      to:      process.env.EMAIL_DESTINO,
+      subject: `📋 Nuevo registro — ${registro.fecha}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto;">
 
-// POST /api/login → iniciar sesión
+          <div style="background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+                      padding: 24px; border-radius: 12px 12px 0 0; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 20px;">✝️ Iglesia del Nazareno</h1>
+            <p style="color: rgba(255,255,255,0.85); margin: 4px 0 0; font-size: 13px;">
+              Los Lobos — Talcahuano
+            </p>
+          </div>
+
+          <div style="background: #f8fafc; padding: 24px; border-radius: 0 0 12px 12px;
+                      border: 1px solid #e2e8f0; border-top: none;">
+
+            <h2 style="color: #1e293b; font-size: 16px; margin-top: 0;">
+              Nuevo registro de asistencia
+            </h2>
+
+            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b; width: 40%;">📅 Fecha</td>
+                <td style="padding: 10px 0; color: #1e293b; font-weight: 600;">
+                  ${registro.fecha}
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b;">🎤 Dirigido por</td>
+                <td style="padding: 10px 0; color: #1e293b;">${registro.dirigido_por}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b;">📖 Predicador</td>
+                <td style="padding: 10px 0; color: #1e293b;">${registro.predicador}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b;">💬 Mensaje</td>
+                <td style="padding: 10px 0; color: #1e293b;">${registro.mensaje}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b;">👨 Hombres</td>
+                <td style="padding: 10px 0; color: #1e293b;">${registro.hombres}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b;">👩 Mujeres</td>
+                <td style="padding: 10px 0; color: #1e293b;">${registro.mujeres}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 0; color: #64748b;">👧 Niños</td>
+                <td style="padding: 10px 0; color: #1e293b;">${registro.ninos}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #64748b;">👥 Total</td>
+                <td style="padding: 10px 0; color: #3b82f6; font-weight: 700;
+                            font-size: 18px;">${registro.total}</td>
+              </tr>
+            </table>
+
+          </div>
+
+        </div>
+      `
+    })
+    console.log(`📧 Email enviado para registro del ${registro.fecha}`)
+  } catch (error) {
+    console.error("❌ Error enviando email:", error)
+  }
+}
+
+// ─── RUTAS PÚBLICAS ───────────────────────────────────────────────
 app.post("/api/login", async (req, res) => {
   const { email, password } = req.body
-
   if (!email || !password) {
     return res.status(400).json({ error: "Email y contraseña requeridos" })
   }
-
   const usuario = db.buscarUsuarioPorEmail(email)
-
   if (!usuario) {
     return res.status(401).json({ error: "Credenciales incorrectas" })
   }
-
   const passwordCorrecta = await auth.verificarPassword(password, usuario.password)
-
   if (!passwordCorrecta) {
     return res.status(401).json({ error: "Credenciales incorrectas" })
   }
-
   const token = auth.generarToken(usuario)
   res.json({ token, nombre: usuario.nombre })
 })
 
-// POST /api/setup → crear el primer usuario (solo si no hay ninguno)
 app.post("/api/setup", async (req, res) => {
   const { nombre, email, password } = req.body
-
   if (db.contarUsuarios() > 0) {
     return res.status(403).json({ error: "Ya existe un usuario registrado" })
   }
-
   const hash = await auth.hashearPassword(password)
   db.crearUsuario(nombre, email, hash)
   res.json({ ok: true, mensaje: "Usuario creado correctamente" })
 })
 
-// ─── RUTAS PROTEGIDAS (requieren login) ──────────────────────────
-
-app.get("/api/registros",      auth.requireAuth, (req, res) => {
+// ─── RUTAS PROTEGIDAS ─────────────────────────────────────────────
+app.get("/api/registros", auth.requireAuth, (req, res) => {
   try {
     res.json(db.obtenerTodos())
   } catch (e) {
@@ -70,16 +135,18 @@ app.get("/api/registros",      auth.requireAuth, (req, res) => {
   }
 })
 
-app.post("/api/registros",     auth.requireAuth, (req, res) => {
+// ── Al crear un registro, enviamos email de notificación ──────────
+app.post("/api/registros", auth.requireAuth, async (req, res) => {
   try {
     const resultado = db.crear(req.body)
+    await enviarNotificacion(req.body)   // ← envía el email
     res.json({ ok: true, id: resultado.lastInsertRowid })
   } catch (e) {
     res.status(500).json({ error: "Error al crear registro" })
   }
 })
 
-app.put("/api/registros/:id",  auth.requireAuth, (req, res) => {
+app.put("/api/registros/:id", auth.requireAuth, (req, res) => {
   try {
     db.actualizar(req.params.id, req.body)
     res.json({ ok: true })
