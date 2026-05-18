@@ -1,13 +1,15 @@
-const CACHE_NAME    = "iglesia-app-v1"
-const CACHE_URLS    = [
+const CACHE_NAME    = "iglesia-app-v2"
+const CACHE_URLS = [
   "/",
   "/index.html",
   "/dashboard.html",
   "/login.html",
+  "/miembros.html",      // ← nuevo
   "/style.css",
   "/app.js",
   "/auth.js",
   "/dashboard.js",
+  "/miembros.js",        // ← nuevo
   "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap",
   "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
   "https://cdn.jsdelivr.net/npm/chart.js"
