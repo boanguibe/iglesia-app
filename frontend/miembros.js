@@ -221,6 +221,18 @@ function agregarDiscipulado(nombre = "", inicio = "", fin = "") {
 function quitarDiscipulado(id) {
   document.getElementById(id)?.remove()
 }
+// ─── Calcular años en la iglesia automáticamente ──────────────────
+function calcularAniosIglesia() {
+  const fechaReg = document.getElementById("fecha_registro").value
+  if (!fechaReg) return
+
+  const hoy      = new Date()
+  const registro = new Date(fechaReg)
+  const anios    = Math.floor((hoy - registro) / (365.25 * 24 * 60 * 60 * 1000))
+
+  document.getElementById("anios_iglesia").value = anios < 0 ? 0 : anios
+}
+
 
 // ─── Limpiar formulario ───────────────────────────────────────────
 function limpiarFormulario() {

@@ -104,12 +104,14 @@
 
             <div class="campo">
               <label>Fecha de registro *</label>
-              <input type="date" id="fecha_registro">
+              <input type="date" id="fecha_registro" onchange="calcularAniosIglesia()">
             </div>
 
+            <!-- El campo años queda de solo lectura ya que se calcula automático -->
             <div class="campo">
               <label>Años en la iglesia</label>
-              <input type="number" id="anios_iglesia" min="0" placeholder="0">
+              <input type="number" id="anios_iglesia" min="0" placeholder="0" readonly
+                style="background-color: var(--fondo); cursor: not-allowed;">
             </div>
 
             <div class="campo">
