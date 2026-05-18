@@ -161,6 +161,58 @@ app.delete("/api/registros/:id", auth.requireAuth, (req, res) => {
   }
 })
 
+
+// ─── RUTAS DE MIEMBROS (protegidas) ──────────────────────────────
+
+app.get("/api/miembros", auth.requireAuth, (req, res) => {
+  try {
+    res.json(db.obtenerTodosMiembros())
+  } catch (e) {
+    res.status(500).json({ error: "Error al obtener miembros" })
+  }
+})
+
+app.get("/api/miembros/:id", auth.requireAuth, (req, res) => {
+  try {
+    const miembro = db.obtenerMiembroPorId(req.params.id)
+    if (!miembro) return res.status(404).json({ error: "Miembro no encontrado" })
+    res.json(miembro)
+  } catch (e) {
+    res.status(500).json({ error: "Error al obtener miembro" })
+  }
+})
+
+app.post("/api/miembros", auth.requireAuth, (req, res) => {
+  try {
+    const { cargos, discipulados, ...datos } = req.body
+    const id = db.crearMiembro(datos, cargos || [], discipulados || [])
+    res.json({ ok: true, id })
+  } catch (e) {
+    res.status(500).json({ error: "Error al crear miembro" })
+  }
+})
+
+app.put("/api/miembros/:id", auth.requireAuth, (req, res) => {
+  try {
+    const { cargos, discipulados, ...datos } = req.body
+    db.actualizarMiembro(req.params.id, datos, cargos || [], discipulados || [])
+    res.json({ ok: true })
+  } catch (e) {
+    res.status(500).json({ error: "Error al actualizar miembro" })
+  }
+})
+
+app.delete("/api/miembros/:id", auth.requireAuth, (req, res) => {
+  try {
+    db.eliminarMiembro(req.params.id)
+    res.json({ ok: true })
+  } catch (e) {
+    res.status(500).json({ error: "Error al eliminar miembro" })
+  }
+})
+
+
+
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en http://localhost:${PORT}`)
 })
