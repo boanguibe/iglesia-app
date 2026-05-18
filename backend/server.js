@@ -8,7 +8,23 @@ const { Resend } = require("resend")
 
 const app    = express()
 const PORT   = process.env.PORT || 3000
-const resend = new Resend(process.env.RESEND_API_KEY)
+// ✅ Después — inicializa dentro de la función
+async function enviarNotificacion(registro) {
+  if (!process.env.RESEND_API_KEY) {
+    console.log("⚠️ RESEND_API_KEY no configurada — email no enviado")
+    return
+  }
+
+  const resend = new Resend(process.env.RESEND_API_KEY)
+
+  try {
+    await resend.emails.send({
+      // ... resto del código igual
+    })
+  } catch (error) {
+    console.error("❌ Error enviando email:", error)
+  }
+}
 
 app.use(cors())
 app.use(express.json())
