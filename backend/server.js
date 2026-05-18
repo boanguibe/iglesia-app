@@ -42,14 +42,22 @@ app.get("/sw.js", (req, res) => {
 
 // ─── Función para enviar email de notificación ────────────────────
 async function enviarNotificacion(registro) {
+  if (!process.env.RESEND_API_KEY) {
+    console.log("⚠️ RESEND_API_KEY no configurada — email no enviado")
+    return
+  }
+
+  // ← Se crea la instancia AQUI adentro con la clave correcta
+  const { Resend } = require("resend")
+  const clienteResend = new Resend(process.env.RESEND_API_KEY)
+
   try {
-    await resend.emails.send({
+    await clienteResend.emails.send({
       from:    "Iglesia App <onboarding@resend.dev>",
       to:      process.env.EMAIL_DESTINO,
       subject: `📋 Nuevo registro — ${registro.fecha}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto;">
-
           <div style="background: linear-gradient(135deg, #1d4ed8, #3b82f6);
                       padding: 24px; border-radius: 12px 12px 0 0; text-align: center;">
             <h1 style="color: white; margin: 0; font-size: 20px;">✝️ Iglesia del Nazareno</h1>
@@ -57,20 +65,15 @@ async function enviarNotificacion(registro) {
               Los Lobos — Talcahuano
             </p>
           </div>
-
           <div style="background: #f8fafc; padding: 24px; border-radius: 0 0 12px 12px;
                       border: 1px solid #e2e8f0; border-top: none;">
-
             <h2 style="color: #1e293b; font-size: 16px; margin-top: 0;">
               Nuevo registro de asistencia
             </h2>
-
             <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
               <tr style="border-bottom: 1px solid #e2e8f0;">
                 <td style="padding: 10px 0; color: #64748b; width: 40%;">📅 Fecha</td>
-                <td style="padding: 10px 0; color: #1e293b; font-weight: 600;">
-                  ${registro.fecha}
-                </td>
+                <td style="padding: 10px 0; color: #1e293b; font-weight: 600;">${registro.fecha}</td>
               </tr>
               <tr style="border-bottom: 1px solid #e2e8f0;">
                 <td style="padding: 10px 0; color: #64748b;">🎤 Dirigido por</td>
@@ -102,9 +105,7 @@ async function enviarNotificacion(registro) {
                             font-size: 18px;">${registro.total}</td>
               </tr>
             </table>
-
           </div>
-
         </div>
       `
     })
