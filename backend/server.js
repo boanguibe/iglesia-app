@@ -1,36 +1,18 @@
-require("dotenv").config()   // ← agrega esta línea al inicio
-const express  = require("express")
-const cors     = require("cors")
-const path     = require("path")
-const db       = require("./database")
-const auth     = require("./auth")
-const { Resend } = require("resend")
+require("dotenv").config()
+const express = require("express")
+const cors    = require("cors")
+const path    = require("path")
+const db      = require("./database")
+const auth    = require("./auth")
 
-const app    = express()
-const PORT   = process.env.PORT || 3000
-// ✅ Después — inicializa dentro de la función
-async function enviarNotificacion(registro) {
-  if (!process.env.RESEND_API_KEY) {
-    console.log("⚠️ RESEND_API_KEY no configurada — email no enviado")
-    return
-  }
-
-  const resend = new Resend(process.env.RESEND_API_KEY)
-
-  try {
-    await resend.emails.send({
-      // ... resto del código igual
-    })
-  } catch (error) {
-    console.error("❌ Error enviando email:", error)
-  }
-}
+const app  = express()
+const PORT = process.env.PORT || 3000
 
 app.use(cors())
 app.use(express.json())
 app.use(express.static(path.join(__dirname, "../frontend")))
 
-// Archivos PWA
+// ─── Archivos PWA ─────────────────────────────────────────────────
 app.get("/manifest.json", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/manifest.json"))
 })
@@ -40,15 +22,14 @@ app.get("/sw.js", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/sw.js"))
 })
 
-// ─── Función para enviar email de notificación ────────────────────
+// ─── Enviar notificación por email ────────────────────────────────
 async function enviarNotificacion(registro) {
   if (!process.env.RESEND_API_KEY) {
     console.log("⚠️ RESEND_API_KEY no configurada — email no enviado")
     return
   }
 
-  // ← Se crea la instancia AQUI adentro con la clave correcta
-  const { Resend } = require("resend")
+  const { Resend }    = require("resend")
   const clienteResend = new Resend(process.env.RESEND_API_KEY)
 
   try {
@@ -152,11 +133,10 @@ app.get("/api/registros", auth.requireAuth, (req, res) => {
   }
 })
 
-// ── Al crear un registro, enviamos email de notificación ──────────
 app.post("/api/registros", auth.requireAuth, async (req, res) => {
   try {
     const resultado = db.crear(req.body)
-    await enviarNotificacion(req.body)   // ← envía el email
+    await enviarNotificacion(req.body)
     res.json({ ok: true, id: resultado.lastInsertRowid })
   } catch (e) {
     res.status(500).json({ error: "Error al crear registro" })
