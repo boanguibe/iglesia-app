@@ -650,3 +650,124 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
     grid-template-columns: 1fr;
   }
 }
+
+/* ─── Secciones del formulario ───────────────────────────────────── */
+.seccion-titulo {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--azul);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--azul-claro);
+  margin-bottom: 16px;
+}
+
+/* ─── Grid de cargos (checkboxes) ────────────────────────────────── */
+.cargos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.cargo-opcion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--texto);
+  cursor: pointer;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1.5px solid var(--borde);
+  transition: all 0.2s;
+}
+
+.cargo-opcion:hover {
+  border-color: var(--azul);
+  background-color: var(--azul-claro);
+}
+
+.cargo-opcion input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  accent-color: var(--azul);
+}
+
+.cargo-opcion:has(input:checked) {
+  border-color: var(--azul);
+  background-color: var(--azul-claro);
+  color: var(--azul);
+  font-weight: 600;
+}
+
+/* ─── Discipulados dinámicos ─────────────────────────────────────── */
+.discipulado-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 10px;
+  align-items: end;
+  margin-bottom: 10px;
+  padding: 12px;
+  background-color: var(--fondo);
+  border-radius: 8px;
+}
+
+.btn-agregar-disc {
+  padding: 8px 16px;
+  background-color: var(--blanco);
+  color: var(--verde);
+  border: 1.5px solid var(--verde);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.2s;
+}
+
+.btn-agregar-disc:hover {
+  background-color: var(--verde);
+  color: white;
+}
+
+.btn-quitar-disc {
+  padding: 8px 12px;
+  background-color: #fef2f2;
+  color: var(--rojo);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.btn-quitar-disc:hover {
+  background-color: var(--rojo);
+  color: white;
+}
+
+/* ─── Tags de cargos en la tabla ─────────────────────────────────── */
+.cargo-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  background-color: var(--azul-claro);
+  color: var(--azul);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  margin: 2px;
+}
+
+/* ─── Responsive miembros ────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .cargos-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .discipulado-item {
+    grid-template-columns: 1fr;
+  }
+}
