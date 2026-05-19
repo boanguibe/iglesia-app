@@ -686,9 +686,9 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   .header-usuario { width: 100%; justify-content: flex-end; }
 
   .navegacion {
-    padding: 0 16px;
-    overflow-x: auto;
-    white-space: nowrap;
+    background-color: var(--blanco);
+    border-bottom: 1px solid var(--borde);
+    padding: 0;                    /* ← quitamos el padding directo */
   }
 
   main { padding: 20px 16px; }
@@ -743,12 +743,24 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   .body-login { padding: 16px; }
 
   .navegacion {
+    background-color: var(--blanco);
+    border-bottom: 1px solid var(--borde);
+    padding: 0;                    /* ← quitamos el padding directo */
+  }
+
+  /* Nuevo contenedor interno de la navegación */
+  .navegacion-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 4px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
 
-  .navegacion::-webkit-scrollbar { display: none; }
+  .navegacion-inner::-webkit-scrollbar { display: none; }
 
   .nav-link { padding: 12px 14px; font-size: 13px; }
 }
@@ -808,4 +820,44 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   .tarjeta-resumen { box-shadow: none; border: 1px solid #e2e8f0; }
 
   .fecha-emision { display: block !important; }
+}
+
+
+/* 🔧 Mejoras adicionales para móvil */
+@media (max-width: 480px) {
+
+  /* ... lo que ya tienes ... */
+
+  /* Header más compacto */
+  header { padding: 12px 16px; }
+
+  .header-contenido { gap: 8px; }
+
+  .header-icono { font-size: 24px; }
+
+  .header-texto h1 { font-size: 15px; }
+
+  .header-texto p  { display: none; } /* ocultar subtítulo en móvil */
+
+  /* Nombre usuario más corto */
+  .header-usuario span {
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Cards resumen más compactas */
+  .tarjeta-resumen { padding: 14px 10px; }
+
+  .resumen-icono  { font-size: 20px; }
+  .resumen-numero { font-size: 22px; }
+
+  /* Formulario padding reducido */
+  .formulario-card .formulario-grid { padding: 16px; }
+
+  .botones { padding: 0 16px 16px; }
+
+  /* Tabla */
+  td, th { padding: 10px 12px; font-size: 12px; }
 }
