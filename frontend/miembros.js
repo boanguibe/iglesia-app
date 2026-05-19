@@ -1,17 +1,135 @@
-let miembros       = []
-let idEditando     = null
-let contadorDisc   = 0
+let miembros     = []
+let idEditando   = null
+let contadorDisc = 0
+let tiposCargo   = []
+let tiposDisc    = []
 
 // ─── Arranque ─────────────────────────────────────────────────────
 requireLogin()
 mostrarUsuario()
-cargarMiembros()
+iniciar()
+
+async function iniciar() {
+  await Promise.all([
+    cargarTiposCargo(),
+    cargarTiposDiscipulado(),
+    cargarMiembros()
+  ])
+}
+
+// ─── Cargar tipos de cargo ────────────────────────────────────────
+async function cargarTiposCargo() {
+  const r = await fetchAuth("/api/tipos-cargo")
+  if (!r) return
+  tiposCargo = await r.json()
+  renderizarCargosGrid()
+  renderizarListaTiposCargo()
+}
+
+function renderizarCargosGrid() {
+  const grid = document.getElementById("cargos-grid")
+  grid.innerHTML = tiposCargo.map(t => `
+    <label class="cargo-opcion">
+      <input type="checkbox" value="${t.nombre}"> ${t.nombre}
+    </label>
+  `).join("")
+}
+
+function renderizarListaTiposCargo() {
+  const lista = document.getElementById("lista-tipos-cargo")
+  if (!lista) return
+  lista.innerHTML = tiposCargo.map(t => `
+    <div class="tipo-item">
+      <span>${t.nombre}</span>
+      <button class="btn-quitar-tipo" onclick="eliminarTipoCargo(${t.id}, '${t.nombre}')">
+        ✕ Eliminar
+      </button>
+    </div>
+  `).join("") || '<p style="color:#aaa; font-size:13px;">No hay tipos definidos.</p>'
+}
+
+async function agregarTipoCargo() {
+  const input  = document.getElementById("nuevo-cargo")
+  const nombre = input.value.trim()
+  if (!nombre) return
+
+  await fetchAuth("/api/tipos-cargo", {
+    method: "POST",
+    body:   JSON.stringify({ nombre })
+  })
+
+  input.value = ""
+  await cargarTiposCargo()
+}
+
+async function eliminarTipoCargo(id, nombre) {
+  if (!confirm(`¿Eliminar el cargo "${nombre}"?`)) return
+  await fetchAuth(`/api/tipos-cargo/${id}`, { method: "DELETE" })
+  await cargarTiposCargo()
+}
+
+// ─── Cargar tipos de discipulado ──────────────────────────────────
+async function cargarTiposDiscipulado() {
+  const r = await fetchAuth("/api/tipos-discipulado")
+  if (!r) return
+  tiposDisc = await r.json()
+  renderizarListaTiposDiscipulado()
+}
+
+function renderizarListaTiposDiscipulado() {
+  const lista = document.getElementById("lista-tipos-discipulado")
+  if (!lista) return
+  lista.innerHTML = tiposDisc.map(t => `
+    <div class="tipo-item">
+      <span>${t.nombre}</span>
+      <button class="btn-quitar-tipo" onclick="eliminarTipoDiscipulado(${t.id}, '${t.nombre}')">
+        ✕ Eliminar
+      </button>
+    </div>
+  `).join("") || '<p style="color:#aaa; font-size:13px;">No hay tipos definidos.</p>'
+}
+
+async function agregarTipoDiscipulado() {
+  const input  = document.getElementById("nuevo-discipulado")
+  const nombre = input.value.trim()
+  if (!nombre) return
+
+  await fetchAuth("/api/tipos-discipulado", {
+    method: "POST",
+    body:   JSON.stringify({ nombre })
+  })
+
+  input.value = ""
+  await cargarTiposDiscipulado()
+}
+
+async function eliminarTipoDiscipulado(id, nombre) {
+  if (!confirm(`¿Eliminar el tipo de discipulado "${nombre}"?`)) return
+  await fetchAuth(`/api/tipos-discipulado/${id}`, { method: "DELETE" })
+  await cargarTiposDiscipulado()
+}
+
+// ─── Toggle panel gestión ─────────────────────────────────────────
+function toggleGestionar(panelId) {
+  const panel = document.getElementById(panelId)
+  panel.style.display = panel.style.display === "none" ? "block" : "none"
+}
+
+// ─── Calcular años en la iglesia ──────────────────────────────────
+function calcularAniosIglesia() {
+  const fechaReg = document.getElementById("fecha_registro").value
+  if (!fechaReg) return
+  const hoy    = new Date()
+  const inicio = new Date(fechaReg)
+  const anios  = Math.floor((hoy - inicio) / (365.25 * 24 * 60 * 60 * 1000))
+  document.getElementById("anios_iglesia").value = anios < 0 ? 0 : anios
+}
 
 // ─── Cargar miembros ──────────────────────────────────────────────
 async function cargarMiembros() {
-  const respuesta = await fetchAuth("/api/miembros")
-  if (!respuesta) return
-  miembros = await respuesta.json()
+  const r = await fetchAuth("/api/miembros")
+  if (!r) return
+  miembros = await r.json()
   actualizarResumen()
   renderizarTabla(miembros)
 }
@@ -23,9 +141,9 @@ function actualizarResumen() {
   const bautizados = miembros.filter(m => m.bautizado === "si").length
   const discTotal  = miembros.reduce((acc, m) => acc + (m.discipulados?.length || 0), 0)
 
-  document.getElementById("total-miembros").textContent   = total
-  document.getElementById("total-activos").textContent    = activos
-  document.getElementById("total-bautizados").textContent = bautizados
+  document.getElementById("total-miembros").textContent    = total
+  document.getElementById("total-activos").textContent     = activos
+  document.getElementById("total-bautizados").textContent  = bautizados
   document.getElementById("total-discipulados").textContent = discTotal
 }
 
@@ -49,14 +167,10 @@ function renderizarTabla(lista) {
       ? `<span style="color:#10b981; font-weight:600;">● Activo</span>`
       : `<span style="color:#ef4444; font-weight:600;">● Inactivo</span>`
 
-    const tipoBadge = m.tipo === "miembro"
-      ? "Miembro"
-      : "Asistente"
-
     tbody.innerHTML += `
       <tr>
         <td><strong>${m.nombre}</strong></td>
-        <td>${tipoBadge}</td>
+        <td>${m.tipo === "miembro" ? "Miembro" : "Asistente"}</td>
         <td>${estadoBadge}</td>
         <td>${cargosHtml}</td>
         <td>${m.bautizado === "si" ? "💧 Sí" : "No"}</td>
@@ -71,24 +185,22 @@ function renderizarTabla(lista) {
   }
 }
 
-// ─── Filtrar miembros ─────────────────────────────────────────────
+// ─── Filtrar ──────────────────────────────────────────────────────
 function filtrarMiembros() {
   const texto  = document.getElementById("filtro-miembros").value.toLowerCase()
   const estado = document.getElementById("filtro-estado").value
 
-  const resultado = miembros.filter(m => {
+  renderizarTabla(miembros.filter(m => {
     const coincideTexto  = !texto  || m.nombre.toLowerCase().includes(texto)
     const coincideEstado = !estado || m.estado === estado
     return coincideTexto && coincideEstado
-  })
-
-  renderizarTabla(resultado)
+  }))
 }
 
 // ─── Guardar miembro ──────────────────────────────────────────────
 async function guardarMiembro() {
-  const nombre          = document.getElementById("nombre").value.trim()
-  const fecha_registro  = document.getElementById("fecha_registro").value
+  const nombre         = document.getElementById("nombre").value.trim()
+  const fecha_registro = document.getElementById("fecha_registro").value
 
   if (!nombre || !fecha_registro) {
     document.getElementById("error").style.display = "block"
@@ -111,15 +223,13 @@ async function guardarMiembro() {
     otros_datos:      document.getElementById("otros_datos").value
   }
 
-  // Leer cargos seleccionados
   const cargos = Array.from(
     document.querySelectorAll(".cargos-grid input[type=checkbox]:checked")
   ).map(cb => cb.value)
 
-  // Leer discipulados
   const discipulados = []
   document.querySelectorAll(".discipulado-item").forEach(item => {
-    const nombre_discipulado = item.querySelector(".disc-nombre").value.trim()
+    const nombre_discipulado = item.querySelector(".disc-nombre").value
     const fecha_inicio       = item.querySelector(".disc-inicio").value
     const fecha_fin          = item.querySelector(".disc-fin").value
     if (nombre_discipulado) {
@@ -150,28 +260,26 @@ async function guardarMiembro() {
 
 // ─── Editar miembro ───────────────────────────────────────────────
 async function editarMiembro(id) {
-  const respuesta = await fetchAuth(`/api/miembros/${id}`)
-  if (!respuesta) return
-  const m = await respuesta.json()
+  const r = await fetchAuth(`/api/miembros/${id}`)
+  if (!r) return
+  const m = await r.json()
 
-  document.getElementById("nombre").value          = m.nombre
-  document.getElementById("fecha_registro").value  = m.fecha_registro
+  document.getElementById("nombre").value           = m.nombre
+  document.getElementById("fecha_registro").value   = m.fecha_registro
   document.getElementById("fecha_nacimiento").value = m.fecha_nacimiento || ""
-  document.getElementById("direccion").value       = m.direccion || ""
-  document.getElementById("telefono").value        = m.telefono || ""
-  document.getElementById("correo").value          = m.correo || ""
-  document.getElementById("tipo").value            = m.tipo
-  document.getElementById("estado").value          = m.estado
-  document.getElementById("anios_iglesia").value   = m.anios_iglesia
-  document.getElementById("bautizado").value       = m.bautizado
-  document.getElementById("otros_datos").value     = m.otros_datos || ""
+  document.getElementById("direccion").value        = m.direccion || ""
+  document.getElementById("telefono").value         = m.telefono || ""
+  document.getElementById("correo").value           = m.correo || ""
+  document.getElementById("tipo").value             = m.tipo
+  document.getElementById("estado").value           = m.estado
+  document.getElementById("anios_iglesia").value    = m.anios_iglesia
+  document.getElementById("bautizado").value        = m.bautizado
+  document.getElementById("otros_datos").value      = m.otros_datos || ""
 
-  // Marcar cargos
   document.querySelectorAll(".cargos-grid input[type=checkbox]").forEach(cb => {
     cb.checked = m.cargos.some(c => c.cargo === cb.value)
   })
 
-  // Cargar discipulados
   document.getElementById("lista-discipulados").innerHTML = ""
   contadorDisc = 0
   for (const d of m.discipulados) {
@@ -190,18 +298,28 @@ async function eliminarMiembro(id) {
   await cargarMiembros()
 }
 
-// ─── Agregar fila de discipulado ──────────────────────────────────
+// ─── Agregar discipulado ──────────────────────────────────────────
 function agregarDiscipulado(nombre = "", inicio = "", fin = "") {
-  const id       = contadorDisc++
-  const lista    = document.getElementById("lista-discipulados")
-  const div      = document.createElement("div")
-  div.className  = "discipulado-item"
-  div.id         = `disc-${id}`
-  div.innerHTML  = `
+  const id      = contadorDisc++
+  const lista   = document.getElementById("lista-discipulados")
+  const div     = document.createElement("div")
+  div.className = "discipulado-item"
+  div.id        = `disc-${id}`
+
+  // Opciones del select desde los tipos cargados
+  const opciones = tiposDisc.map(t =>
+    `<option value="${t.nombre}" ${t.nombre === nombre ? "selected" : ""}>${t.nombre}</option>`
+  ).join("")
+
+  div.innerHTML = `
     <div class="campo">
-      <label>Nombre del discipulado</label>
-      <input type="text" class="disc-nombre" value="${nombre}"
-        placeholder="Ej: Discipulado Básico">
+      <label>Tipo de discipulado</label>
+      <select class="disc-nombre"
+        style="padding:10px; border:1.5px solid var(--borde); border-radius:8px;
+               font-family:'Poppins',sans-serif; font-size:14px; width:100%;">
+        <option value="">Seleccionar...</option>
+        ${opciones}
+      </select>
     </div>
     <div class="campo">
       <label>Fecha inicio</label>
@@ -211,9 +329,7 @@ function agregarDiscipulado(nombre = "", inicio = "", fin = "") {
       <label>Fecha fin</label>
       <input type="date" class="disc-fin" value="${fin}">
     </div>
-    <button class="btn-quitar-disc" onclick="quitarDiscipulado('disc-${id}')">
-      ✕
-    </button>
+    <button class="btn-quitar-disc" onclick="quitarDiscipulado('disc-${id}')">✕</button>
   `
   lista.appendChild(div)
 }
@@ -221,18 +337,6 @@ function agregarDiscipulado(nombre = "", inicio = "", fin = "") {
 function quitarDiscipulado(id) {
   document.getElementById(id)?.remove()
 }
-// ─── Calcular años en la iglesia automáticamente ──────────────────
-function calcularAniosIglesia() {
-  const fechaReg = document.getElementById("fecha_registro").value
-  if (!fechaReg) return
-
-  const hoy      = new Date()
-  const registro = new Date(fechaReg)
-  const anios    = Math.floor((hoy - registro) / (365.25 * 24 * 60 * 60 * 1000))
-
-  document.getElementById("anios_iglesia").value = anios < 0 ? 0 : anios
-}
-
 
 // ─── Limpiar formulario ───────────────────────────────────────────
 function limpiarFormulario() {

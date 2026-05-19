@@ -141,33 +141,52 @@
           </div>
 
           <!-- SECCIÓN: Cargos -->
-          <div class="seccion-titulo" style="margin-top: 24px;">🎖️ Cargos en la Iglesia</div>
-          <div class="cargos-grid">
-            <label class="cargo-opcion"><input type="checkbox" value="Pastor"> Pastor</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Líder MNI"> Líder MNI</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Líder JNI"> Líder JNI</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Líder DNI"> Líder DNI</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Concilio JNI"> Concilio JNI</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Concilio MNI"> Concilio MNI</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Concilio DNI"> Concilio DNI</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Delegado"> Delegado</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Ecónomo"> Ecónomo</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Mayordomo"> Mayordomo</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Líder Música"> Líder Música</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Músico"> Músico</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Maestro"> Maestro</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Predicador"> Predicador</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Tesorero"> Tesorero</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Secretario"> Secretario</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Líder MAM"> Líder MAM</label>
-            <label class="cargo-opcion"><input type="checkbox" value="Sin cargo" id="sin-cargo"> Sin cargo</label>
+          <div class="seccion-titulo" style="margin-top: 24px;">
+            🎖️ Cargos en la Iglesia
+            <button class="btn-gestionar" onclick="toggleGestionar('panel-cargos')">
+              ⚙️ Gestionar tipos
+            </button>
           </div>
 
+          <!-- Panel gestión de cargos -->
+          <div id="panel-cargos" class="panel-gestion" style="display:none;">
+            <div class="panel-gestion-inner">
+              <div style="display:flex; gap:8px; margin-bottom:12px;">
+                <input type="text" id="nuevo-cargo" placeholder="Nuevo tipo de cargo..."
+                  style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
+                        border-radius:8px; font-family:'Poppins',sans-serif; font-size:13px;">
+                <button class="btn-guardar" style="padding:8px 16px; font-size:13px;"
+                  onclick="agregarTipoCargo()">Agregar</button>
+              </div>
+              <div id="lista-tipos-cargo"></div>
+            </div>
+          </div>
+
+          <div class="cargos-grid" id="cargos-grid"></div>
+
           <!-- SECCIÓN: Discipulados -->
-          <div class="seccion-titulo" style="margin-top: 24px;">📖 Discipulados Realizados</div>
+          <div class="seccion-titulo" style="margin-top: 24px;">
+            📖 Discipulados Realizados
+            <button class="btn-gestionar" onclick="toggleGestionar('panel-discipulados')">
+              ⚙️ Gestionar tipos
+            </button>
+          </div>
+
+          <!-- Panel gestión de discipulados -->
+          <div id="panel-discipulados" class="panel-gestion" style="display:none;">
+            <div class="panel-gestion-inner">
+              <div style="display:flex; gap:8px; margin-bottom:12px;">
+                <input type="text" id="nuevo-discipulado" placeholder="Nuevo tipo de discipulado..."
+                  style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
+                        border-radius:8px; font-family:'Poppins',sans-serif; font-size:13px;">
+                <button class="btn-guardar" style="padding:8px 16px; font-size:13px;"
+                  onclick="agregarTipoDiscipulado()">Agregar</button>
+              </div>
+              <div id="lista-tipos-discipulado"></div>
+            </div>
+          </div>
 
           <div id="lista-discipulados"></div>
-
           <button class="btn-agregar-disc" onclick="agregarDiscipulado()">
             ➕ Agregar discipulado
           </button>

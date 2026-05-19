@@ -211,7 +211,45 @@ app.delete("/api/miembros/:id", auth.requireAuth, (req, res) => {
   }
 })
 
+// ─── TIPOS DE CARGO ───────────────────────────────────────────────
+app.get("/api/tipos-cargo", auth.requireAuth, (req, res) => {
+  try { res.json(db.obtenerTiposCargo()) }
+  catch (e) { res.status(500).json({ error: "Error al obtener tipos de cargo" }) }
+})
 
+app.post("/api/tipos-cargo", auth.requireAuth, (req, res) => {
+  try {
+    db.crearTipoCargo(req.body.nombre)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Ya existe ese cargo" }) }
+})
+
+app.delete("/api/tipos-cargo/:id", auth.requireAuth, (req, res) => {
+  try {
+    db.eliminarTipoCargo(req.params.id)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al eliminar cargo" }) }
+})
+
+// ─── TIPOS DE DISCIPULADO ─────────────────────────────────────────
+app.get("/api/tipos-discipulado", auth.requireAuth, (req, res) => {
+  try { res.json(db.obtenerTiposDiscipulado()) }
+  catch (e) { res.status(500).json({ error: "Error al obtener tipos de discipulado" }) }
+})
+
+app.post("/api/tipos-discipulado", auth.requireAuth, (req, res) => {
+  try {
+    db.crearTipoDiscipulado(req.body.nombre)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Ya existe ese discipulado" }) }
+})
+
+app.delete("/api/tipos-discipulado/:id", auth.requireAuth, (req, res) => {
+  try {
+    db.eliminarTipoDiscipulado(req.params.id)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al eliminar discipulado" }) }
+})
 
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en http://localhost:${PORT}`)

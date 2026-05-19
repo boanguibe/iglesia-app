@@ -264,7 +264,76 @@ function eliminarMiembro(id) {
   return db.prepare("DELETE FROM miembros WHERE id = ?").run(id)
 }
 
+// ─── Tabla tipos de cargo ─────────────────────────────────────────
+db.exec(`
+  CREATE TABLE IF NOT EXISTS tipos_cargo (
+    id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre TEXT    NOT NULL UNIQUE
+  )
+`)
 
+// Poblar con valores por defecto si está vacía
+const countCargos = db.prepare("SELECT COUNT(*) as total FROM tipos_cargo").get()
+if (countCargos.total === 0) {
+  const insertCargo = db.prepare("INSERT INTO tipos_cargo (nombre) VALUES (?)")
+  const cargosPredefinidos = [
+    "Pastor", "Líder MNI", "Líder JNI", "Líder DNI",
+    "Concilio JNI", "Concilio MNI", "Concilio DNI",
+    "Delegado", "Ecónomo", "Mayordomo", "Líder Música",
+    "Músico", "Maestro", "Predicador", "Tesorero",
+    "Secretario", "Líder MAM", "Sin cargo"
+  ]
+  for (const cargo of cargosPredefinidos) {
+    insertCargo.run(cargo)
+  }
+}
+
+// ─── Tabla tipos de discipulado ───────────────────────────────────
+db.exec(`
+  CREATE TABLE IF NOT EXISTS tipos_discipulado (
+    id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre TEXT    NOT NULL UNIQUE
+  )
+`)
+
+const countDisc = db.prepare("SELECT COUNT(*) as total FROM tipos_discipulado").get()
+if (countDisc.total === 0) {
+  const insertDisc = db.prepare("INSERT INTO tipos_discipulado (nombre) VALUES (?)")
+  const discipuladosPredefinidos = [
+    "Discipulado Básico", "Discipulado Avanzado",
+    "Escuela de Líderes", "Fundamentos de Fe",
+    "Estudio Bíblico", "Preparación Bautismal"
+  ]
+  for (const d of discipuladosPredefinidos) {
+    insertDisc.run(d)
+  }
+}
+
+// ─── Funciones tipos cargo ────────────────────────────────────────
+function obtenerTiposCargo() {
+  return db.prepare("SELECT * FROM tipos_cargo ORDER BY nombre ASC").all()
+}
+
+function crearTipoCargo(nombre) {
+  return db.prepare("INSERT INTO tipos_cargo (nombre) VALUES (?)").run(nombre)
+}
+
+function eliminarTipoCargo(id) {
+  return db.prepare("DELETE FROM tipos_cargo WHERE id = ?").run(id)
+}
+
+// ─── Funciones tipos discipulado ──────────────────────────────────
+function obtenerTiposDiscipulado() {
+  return db.prepare("SELECT * FROM tipos_discipulado ORDER BY nombre ASC").all()
+}
+
+function crearTipoDiscipulado(nombre) {
+  return db.prepare("INSERT INTO tipos_discipulado (nombre) VALUES (?)").run(nombre)
+}
+
+function eliminarTipoDiscipulado(id) {
+  return db.prepare("DELETE FROM tipos_discipulado WHERE id = ?").run(id)
+}
 
 
 module.exports = {
@@ -274,5 +343,9 @@ module.exports = {
   crearUsuario, buscarUsuarioPorEmail, contarUsuarios,
   // Miembros
   obtenerTodosMiembros, obtenerMiembroPorId,
-  crearMiembro, actualizarMiembro, eliminarMiembro
+  crearMiembro, actualizarMiembro, eliminarMiembro,
+  // Tipos
+  obtenerTiposCargo, crearTipoCargo, eliminarTipoCargo,
+  // Discipulados
+  obtenerTiposDiscipulado, crearTipoDiscipulado, eliminarTipoDiscipulado
 }
