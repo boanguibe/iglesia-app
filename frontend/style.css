@@ -512,6 +512,9 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   padding-bottom: 10px;
   border-bottom: 2px solid var(--azul-claro);
   margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /* ─── Grid de cargos ─────────────────────────────────────────────── */
@@ -614,7 +617,6 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 
 /* ─── Gestión de tipos ───────────────────────────────────────────── */
 .btn-gestionar {
-  float: right;
   padding: 4px 10px;
   background-color: var(--blanco);
   color: var(--texto-suave);
@@ -625,6 +627,7 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .btn-gestionar:hover {
