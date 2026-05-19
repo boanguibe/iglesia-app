@@ -1,4 +1,4 @@
-const CACHE_NAME    = "iglesia-app-v2"
+const CACHE_NAME    = "iglesia-app-v2.1"
 const CACHE_URLS = [
   "/",
   "/index.html",
