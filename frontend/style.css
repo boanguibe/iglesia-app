@@ -1,21 +1,24 @@
 /* ═══════════════════════════════════════════════════════════════════
    NAZARAPP — style.css
    Iglesia del Nazareno "Los Lobos" — Talcahuano
+   Paleta: Borgoña + Beige
 ═══════════════════════════════════════════════════════════════════ */
 
 /* ─── Variables de color ──────────────────────────────────────────── */
 :root {
-  --azul:        #3b82f6;
-  --azul-oscuro: #1d4ed8;
-  --azul-claro:  #eff6ff;
-  --texto:       #1e293b;
-  --texto-suave: #64748b;
-  --borde:       #e2e8f0;
-  --fondo:       #f1f5f9;
-  --blanco:      #ffffff;
-  --verde:       #10b981;
-  --rojo:        #ef4444;
-  --naranja:     #f59e0b;
+  --primario:        #8B2635;
+  --primario-oscuro: #6B1D29;
+  --primario-claro:  #F5E8EB;
+  --dorado:          #C67B2F;
+  --dorado-claro:    #FDF3E7;
+  --texto:           #2C1810;
+  --texto-suave:     #7A6058;
+  --borde:           #E0D0C8;
+  --fondo:           #F5EFE6;
+  --blanco:          #FFFFFF;
+  --verde:           #2D6A4F;
+  --rojo:            #C0392B;
+  --naranja:         #C67B2F;
 }
 
 /* ─── Reset y base ───────────────────────────────────────────────── */
@@ -34,10 +37,10 @@ body {
 
 /* ─── Header ─────────────────────────────────────────────────────── */
 header {
-  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  background: linear-gradient(135deg, #6B1D29, #8B2635);
   color: white;
   padding: 20px 40px;
-  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+  box-shadow: 0 4px 12px rgba(139,38,53,0.35);
 }
 
 .header-contenido {
@@ -94,7 +97,6 @@ header {
   width: 100%;
 }
 
-/* Contenedor interno — centra los links igual que el header */
 .navegacion-inner {
   max-width: 1000px;
   margin: 0 auto;
@@ -119,11 +121,11 @@ header {
   white-space: nowrap;
 }
 
-.nav-link:hover  { color: var(--azul); }
+.nav-link:hover { color: var(--primario); }
 
 .nav-link.activo {
-  color: var(--azul);
-  border-bottom-color: var(--azul);
+  color: var(--primario);
+  border-bottom-color: var(--primario);
 }
 
 /* ─── Main ───────────────────────────────────────────────────────── */
@@ -140,8 +142,12 @@ main {
 /* ─── Tarjetas de resumen ────────────────────────────────────────── */
 .resumen {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
+}
+
+.resumen-4 {
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .tarjeta-resumen {
@@ -152,8 +158,8 @@ main {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  border-top: 4px solid var(--azul);
+  box-shadow: 0 2px 8px rgba(139,38,53,0.08);
+  border-top: 4px solid var(--primario);
 }
 
 .resumen-icono  { font-size: 24px; }
@@ -161,7 +167,7 @@ main {
 .resumen-numero {
   font-size: 32px;
   font-weight: 700;
-  color: var(--azul);
+  color: var(--primario);
 }
 
 .resumen-label {
@@ -174,7 +180,7 @@ main {
 .tarjeta {
   background: var(--blanco);
   border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(139,38,53,0.08);
   overflow: hidden;
 }
 
@@ -224,12 +230,12 @@ input, select {
 
 input:focus, select:focus {
   outline: none;
-  border-color: var(--azul);
+  border-color: var(--primario);
 }
 
 /* ─── Total display ──────────────────────────────────────────────── */
 .total-display {
-  background: var(--azul-claro);
+  background: var(--primario-claro);
   border-radius: 8px;
   padding: 10px 14px;
   display: flex;
@@ -240,7 +246,7 @@ input:focus, select:focus {
 .total-display span {
   font-size: 24px;
   font-weight: 700;
-  color: var(--azul);
+  color: var(--primario);
 }
 
 /* ─── Botones del formulario ─────────────────────────────────────── */
@@ -253,7 +259,7 @@ input:focus, select:focus {
 .btn-guardar {
   flex: 1;
   padding: 12px;
-  background-color: var(--azul);
+  background-color: var(--primario);
   color: white;
   border: none;
   border-radius: 8px;
@@ -264,9 +270,9 @@ input:focus, select:focus {
   transition: background-color 0.2s;
 }
 
-.btn-guardar:hover           { background-color: var(--azul-oscuro); }
+.btn-guardar:hover           { background-color: var(--primario-oscuro); }
 .btn-guardar.editando        { background-color: var(--naranja); }
-.btn-guardar.editando:hover  { background-color: #d97706; }
+.btn-guardar.editando:hover  { background-color: #a5621f; }
 
 .btn-cancelar {
   flex: 1;
@@ -324,7 +330,7 @@ td {
 }
 
 tr:last-child td    { border-bottom: none; }
-tr:hover td         { background-color: var(--azul-claro); }
+tr:hover td         { background-color: var(--primario-claro); }
 tr.editando-fila td { background-color: #fef9c3 !important; }
 
 .sin-registros {
@@ -337,8 +343,8 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 /* ─── Botones de la tabla ────────────────────────────────────────── */
 .btn-editar {
   padding: 6px 12px;
-  background-color: var(--azul-claro);
-  color: var(--azul);
+  background-color: var(--primario-claro);
+  color: var(--primario);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -346,10 +352,10 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
   margin-right: 6px;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
-.btn-editar:hover { background-color: var(--azul); color: white; }
+.btn-editar:hover { background-color: var(--primario); color: white; }
 
 .btn-eliminar {
   padding: 6px 12px;
@@ -361,7 +367,7 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   font-size: 12px;
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
 .btn-eliminar:hover { background-color: var(--rojo); color: white; }
@@ -384,7 +390,7 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 /* ─── Botón Excel ────────────────────────────────────────────────── */
 .btn-excel {
   padding: 8px 16px;
-  background-color: #16a34a;
+  background-color: #2D6A4F;
   color: white;
   border: none;
   border-radius: 8px;
@@ -395,13 +401,13 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   transition: background-color 0.2s;
 }
 
-.btn-excel:hover    { background-color: #15803d; }
-.btn-excel:disabled { background-color: #86efac; cursor: not-allowed; }
+.btn-excel:hover    { background-color: #1B4332; }
+.btn-excel:disabled { background-color: #95D5B2; cursor: not-allowed; }
 
 /* ─── Botón imprimir ─────────────────────────────────────────────── */
 .btn-imprimir {
   padding: 8px 16px;
-  background-color: #7c3aed;
+  background-color: #5B3A6B;
   color: white;
   border: none;
   border-radius: 8px;
@@ -412,7 +418,7 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   transition: background-color 0.2s;
 }
 
-.btn-imprimir:hover { background-color: #6d28d9; }
+.btn-imprimir:hover { background-color: #432A52; }
 
 /* ─── Filtros ────────────────────────────────────────────────────── */
 .filtros-container {
@@ -421,7 +427,7 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   gap: 12px;
   padding: 16px 24px;
   border-bottom: 1px solid var(--borde);
-  background-color: #fafbfc;
+  background-color: #FAF6F0;
 }
 
 .filtro-grupo {
@@ -465,10 +471,10 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 /* ─── Contador resultados ────────────────────────────────────────── */
 .resultados-info {
   padding: 10px 24px;
-  background-color: var(--azul-claro);
+  background-color: var(--primario-claro);
   border-bottom: 1px solid var(--borde);
   font-size: 13px;
-  color: var(--azul);
+  color: var(--primario);
   font-weight: 500;
 }
 
@@ -485,6 +491,7 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   align-items: center;
   min-height: 100vh;
   padding: 20px;
+  background: linear-gradient(160deg, #6B1D29 0%, #8B2635 50%, #C67B2F 100%);
 }
 
 .login-container {
@@ -493,9 +500,11 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 }
 
 .login-header    { text-align: center; margin-bottom: 24px; }
-.login-icono     { font-size: 48px; margin-bottom: 12px; }
-.login-header h1 { font-size: 20px; font-weight: 700; color: var(--texto); }
-.login-header p  { font-size: 13px; color: var(--texto-suave); margin-top: 4px; }
+.login-icono     { font-size: 56px; margin-bottom: 12px; }
+.login-header h1 { font-size: 22px; font-weight: 700; color: white; }
+.login-header p  { font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 4px; }
+
+.login-card .tarjeta-header h2 { color: var(--primario); }
 
 /* ─── Dashboard gráficos ─────────────────────────────────────────── */
 .graficos-grid {
@@ -518,15 +527,15 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   font-family: 'Poppins', sans-serif;
 }
 
-/* ─── Módulo membresía ───────────────────────────────────────────── */
+/* ─── Módulo membresía — sección título ──────────────────────────── */
 .seccion-titulo {
   font-size: 13px;
   font-weight: 700;
-  color: var(--azul);
+  color: var(--primario);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding-bottom: 10px;
-  border-bottom: 2px solid var(--azul-claro);
+  border-bottom: 2px solid var(--primario-claro);
   margin-bottom: 16px;
   display: flex;
   justify-content: space-between;
@@ -555,20 +564,20 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 }
 
 .cargo-opcion:hover {
-  border-color: var(--azul);
-  background-color: var(--azul-claro);
+  border-color: var(--primario);
+  background-color: var(--primario-claro);
 }
 
 .cargo-opcion input[type="checkbox"] {
   width: auto;
   margin: 0;
-  accent-color: var(--azul);
+  accent-color: var(--primario);
 }
 
 .cargo-opcion:has(input:checked) {
-  border-color: var(--azul);
-  background-color: var(--azul-claro);
-  color: var(--azul);
+  border-color: var(--primario);
+  background-color: var(--primario-claro);
+  color: var(--primario);
   font-weight: 600;
 }
 
@@ -623,8 +632,8 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 .cargo-tag {
   display: inline-block;
   padding: 2px 8px;
-  background-color: var(--azul-claro);
-  color: var(--azul);
+  background-color: var(--primario-claro);
+  color: var(--primario);
   border-radius: 20px;
   font-size: 11px;
   font-weight: 600;
@@ -647,14 +656,14 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 }
 
 .btn-gestionar:hover {
-  border-color: var(--azul);
-  color: var(--azul);
+  border-color: var(--primario);
+  color: var(--primario);
 }
 
 .panel-gestion { margin-bottom: 16px; }
 
 .panel-gestion-inner {
-  background-color: #fafbfc;
+  background-color: #FAF6F0;
   border: 1.5px solid var(--borde);
   border-radius: 10px;
   padding: 16px;
@@ -703,7 +712,8 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 
   main { padding: 20px 16px; }
 
-  .resumen { grid-template-columns: repeat(2, 1fr); }
+  .resumen     { grid-template-columns: repeat(2, 1fr); }
+  .resumen-4   { grid-template-columns: repeat(2, 1fr); }
 
   .graficos-grid  { grid-template-columns: 1fr; }
   .grafico-grande { grid-column: 1; }
@@ -730,14 +740,10 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 /* Móvil (480px) */
 @media (max-width: 480px) {
 
-  header { padding: 12px 16px; }
-
+  header           { padding: 12px 16px; }
   .header-contenido { gap: 8px; }
-
-  .header-icono { font-size: 24px; }
-
+  .header-icono    { font-size: 24px; }
   .header-texto h1 { font-size: 15px; }
-
   .header-texto p  { display: none; }
 
   .header-usuario span {
@@ -750,10 +756,10 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   .nav-link { padding: 12px 14px; font-size: 13px; }
 
   .resumen        { grid-template-columns: repeat(2, 1fr); }
+  .resumen-4      { grid-template-columns: repeat(2, 1fr); }
   .resumen-numero { font-size: 24px; }
   .resumen-label  { font-size: 11px; }
   .resumen-icono  { font-size: 20px; }
-
   .tarjeta-resumen { padding: 14px 10px; }
 
   .filtros-container { grid-template-columns: 1fr; }
@@ -762,16 +768,14 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 
   .discipulado-item { grid-template-columns: 1fr; }
 
-  .botones        { flex-direction: column; }
+  .botones      { flex-direction: column; padding: 0 16px 16px; }
   .btn-guardar,
-  .btn-cancelar   { width: 100%; }
+  .btn-cancelar { width: 100%; }
 
   .formulario-card .formulario-grid { padding: 16px; }
 
-  .botones { padding: 0 16px 16px; }
-
-  table   { min-width: 600px; }
-  td, th  { padding: 10px 12px; font-size: 12px; }
+  table  { min-width: 600px; }
+  td, th { padding: 10px 12px; font-size: 12px; }
 
   .body-login { padding: 16px; }
 }
@@ -799,7 +803,7 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   body { background-color: white; padding: 0; }
 
   header {
-    background: #1d4ed8 !important;
+    background: #8B2635 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -815,20 +819,20 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
     print-color-adjust: exact;
   }
 
-  table { border: 1px solid #e2e8f0; }
+  table  { border: 1px solid #E0D0C8; }
 
   th {
-    background-color: #f1f5f9 !important;
-    color: #1e293b !important;
+    background-color: #F5EFE6 !important;
+    color: #2C1810 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
-  td  { border: 1px solid #e2e8f0; }
+  td  { border: 1px solid #E0D0C8; }
   tr  { page-break-inside: avoid; }
 
   .tarjeta,
-  .tarjeta-resumen { box-shadow: none; border: 1px solid #e2e8f0; }
+  .tarjeta-resumen { box-shadow: none; border: 1px solid #E0D0C8; }
 
   .fecha-emision { display: block !important; }
 }
