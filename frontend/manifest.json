@@ -1,7 +1,7 @@
 {
-  "name": "Iglesia del Nazareno Los Lobos",
-  "short_name": "Iglesia App",
-  "description": "Registro de asistencia - Iglesia del Nazareno Los Lobos Talcahuano",
+  "name": "NazarApp - Iglesia del Nazareno Los Lobos",
+  "short_name": "NazarApp",
+  "description": "Gestión integral de la Iglesia del Nazareno Los Lobos Talcahuano",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f1f5f9",

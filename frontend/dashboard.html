@@ -1,124 +1,127 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard — Iglesia del Nazareno</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- PWA -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#1d4ed8">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Iglesia App">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  </head>
-  <body>
 
-    <!-- HEADER -->
-    <header>
-        <div class="header-contenido">
-            <div class="header-icono">✝️</div>
-            <div class="header-texto">
-            <h1>Registro de Asistencia</h1>
-            <p>Iglesia del Nazareno Los Lobos — Talcahuano</p>
-            </div>
-            <div class="header-usuario">
-            <span id="nombre-usuario"></span>
-            <button class="btn-cerrar-sesion" onclick="cerrarSesion()">
-                Cerrar sesión
-            </button>
-            </div>
-        </div>
-    </header>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NazarApp — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1d4ed8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Iglesia App">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+</head>
 
-    <!-- NAVEGACIÓN -->
-    <nav class="navegacion">
-      <div class="navegacion-inner">
-        <a href="/"               class="nav-link activo">📋 Registros</a>
-        <a href="/dashboard.html" class="nav-link">📊 Dashboard</a>
-        <a href="/miembros.html"  class="nav-link">👥 Miembros</a>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-contenido">
+      <div class="header-icono">✝️</div>
+      <div class="header-texto">
+        <h1>NazarApp</h1>
+        <p>Iglesia del Nazareno "Los Lobos" — Talcahuano</p>
       </div>
-    </nav>
+      <div class="header-usuario">
+        <span id="nombre-usuario"></span>
+        <button class="btn-cerrar-sesion" onclick="cerrarSesion()">
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+  </header>
 
-    <main>
+  <!-- NAVEGACIÓN -->
+  <nav class="navegacion">
+    <div class="navegacion-inner">
+      <a href="/"               class="nav-link">📋 Registros</a>
+      <a href="/dashboard.html" class="nav-link activo">📊 Dashboard</a>
+      <a href="/miembros.html"  class="nav-link">👥 Miembros</a>
+    </div>
+  </nav>
 
-      <!-- TARJETAS DE RESUMEN -->
-      <section class="resumen">
-        <div class="tarjeta-resumen">
-          <span class="resumen-icono">📅</span>
-          <span class="resumen-numero" id="total-cultos">0</span>
-          <span class="resumen-label">Cultos registrados</span>
-        </div>
-        <div class="tarjeta-resumen">
-          <span class="resumen-icono">👥</span>
-          <span class="resumen-numero" id="total-personas">0</span>
-          <span class="resumen-label">Total asistentes</span>
-        </div>
-        <div class="tarjeta-resumen">
-          <span class="resumen-icono">📊</span>
-          <span class="resumen-numero" id="promedio-asistencia">0</span>
-          <span class="resumen-label">Promedio por culto</span>
-        </div>
-        <div class="tarjeta-resumen">
-          <span class="resumen-icono">🏆</span>
-          <span class="resumen-numero" id="mejor-culto">0</span>
-          <span class="resumen-label">Mayor asistencia</span>
-        </div>
-      </section>
+  <main>
 
-      <!-- GRÁFICOS -->
-      <div class="graficos-grid">
+    <!-- TARJETAS DE RESUMEN -->
+    <section class="resumen">
+      <div class="tarjeta-resumen">
+        <span class="resumen-icono">📅</span>
+        <span class="resumen-numero" id="total-cultos">0</span>
+        <span class="resumen-label">Cultos registrados</span>
+      </div>
+      <div class="tarjeta-resumen">
+        <span class="resumen-icono">👥</span>
+        <span class="resumen-numero" id="total-personas">0</span>
+        <span class="resumen-label">Total asistentes</span>
+      </div>
+      <div class="tarjeta-resumen">
+        <span class="resumen-icono">📊</span>
+        <span class="resumen-numero" id="promedio-asistencia">0</span>
+        <span class="resumen-label">Promedio por culto</span>
+      </div>
+      <div class="tarjeta-resumen">
+        <span class="resumen-icono">🏆</span>
+        <span class="resumen-numero" id="mejor-culto">0</span>
+        <span class="resumen-label">Mayor asistencia</span>
+      </div>
+    </section>
 
-        <!-- Gráfico de línea: asistencia en el tiempo -->
-        <div class="tarjeta grafico-card grafico-grande">
-          <div class="tarjeta-header">
-            <h2>📈 Asistencia por Culto</h2>
-          </div>
-          <div class="grafico-contenedor">
-            <canvas id="grafico-asistencia"></canvas>
-          </div>
+    <!-- GRÁFICOS -->
+    <div class="graficos-grid">
+
+      <!-- Gráfico de línea: asistencia en el tiempo -->
+      <div class="tarjeta grafico-card grafico-grande">
+        <div class="tarjeta-header">
+          <h2>📈 Asistencia por Culto</h2>
         </div>
-
-        <!-- Gráfico de torta: distribución -->
-        <div class="tarjeta grafico-card">
-          <div class="tarjeta-header">
-            <h2>🥧 Distribución</h2>
-          </div>
-          <div class="grafico-contenedor">
-            <canvas id="grafico-distribucion"></canvas>
-          </div>
+        <div class="grafico-contenedor">
+          <canvas id="grafico-asistencia"></canvas>
         </div>
-
-        <!-- Gráfico de barras: por predicador -->
-        <div class="tarjeta grafico-card grafico-grande">
-          <div class="tarjeta-header">
-            <h2>🏆 Asistencia Promedio por Predicador</h2>
-          </div>
-          <div class="grafico-contenedor">
-            <canvas id="grafico-predicadores"></canvas>
-          </div>
-        </div>
-
       </div>
 
-    </main>
-    
-    <script src="auth.js"></script>
-    <script src="dashboard.js"></script>
+      <!-- Gráfico de torta: distribución -->
+      <div class="tarjeta grafico-card">
+        <div class="tarjeta-header">
+          <h2>🥧 Distribución</h2>
+        </div>
+        <div class="grafico-contenedor">
+          <canvas id="grafico-distribucion"></canvas>
+        </div>
+      </div>
 
-    <!-- Registrar Service Worker -->
-    <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker.register("/sw.js")
-            .then(() => console.log("✅ Service Worker registrado"))
-            .catch(err => console.log("❌ Error SW:", err))
-        })
-      }
-    </script>
+      <!-- Gráfico de barras: por predicador -->
+      <div class="tarjeta grafico-card grafico-grande">
+        <div class="tarjeta-header">
+          <h2>🏆 Asistencia Promedio por Predicador</h2>
+        </div>
+        <div class="grafico-contenedor">
+          <canvas id="grafico-predicadores"></canvas>
+        </div>
+      </div>
 
-  </body>
+    </div>
+
+  </main>
+
+  <script src="auth.js"></script>
+  <script src="dashboard.js"></script>
+
+  <!-- Registrar Service Worker -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js")
+          .then(() => console.log("✅ Service Worker registrado"))
+          .catch(err => console.log("❌ Error SW:", err))
+      })
+    }
+  </script>
+
+</body>
+
 </html>
