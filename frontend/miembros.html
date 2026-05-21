@@ -1,284 +1,330 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NazarApp — Miembros</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <!-- PWA -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#8B2635">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Iglesia App">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  </head>
-  <body>
 
-    <header>
-      <div class="header-contenido">
-        <div class="header-icono">✝️</div>
-        <div class="header-texto">
-          <h1>NazarApp</h1>
-          <p>Iglesia del Nazareno "Los Lobos" — Talcahuano</p>
-        </div>
-        <div class="header-usuario">
-          <span id="nombre-usuario"></span>
-          <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
-        </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NazarApp — Miembros</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#8B2635">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Iglesia App">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-contenido">
+      <div class="header-icono">✝️</div>
+      <div class="header-texto">
+        <h1>NazarApp</h1>
+        <p>Iglesia del Nazareno "Los Lobos" — Talcahuano</p>
       </div>
-    </header>
+      <div class="header-usuario">
+        <span id="nombre-usuario"></span>
+        <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
 
-   <nav class="navegacion">
+  <nav class="navegacion">
     <div class="navegacion-inner">
-      <a href="/"               class="nav-link">📋 Registros</a>
+      <a href="/" class="nav-link">📋 Registros</a>
       <a href="/dashboard.html" class="nav-link">📊 Dashboard</a>
-      <a href="/miembros.html"  class="nav-link activo">👥 Miembros</a>
+      <a href="/miembros.html" class="nav-link activo">👥 Miembros</a>
     </div>
   </nav>
 
-    <main>
+  <main>
 
-      <!-- TARJETAS RESUMEN -->
-      <section class="resumen">
-        <div class="tarjeta-resumen">
-          <span class="resumen-icono">👥</span>
-          <span class="resumen-numero" id="total-miembros">0</span>
-          <span class="resumen-label">Total miembros</span>
-        </div>
-        <div class="tarjeta-resumen">
-          <span class="resumen-icono">✅</span>
-          <span class="resumen-numero" id="total-activos">0</span>
-          <span class="resumen-label">Activos</span>
-        </div>
-        <div class="tarjeta-resumen">
-          <span class="resumen-icono">💧</span>
-          <span class="resumen-numero" id="total-bautizados">0</span>
-          <span class="resumen-label">Bautizados</span>
-        </div>
-        <div class="tarjeta-resumen">
-          <span class="resumen-icono">📖</span>
-          <span class="resumen-numero" id="total-discipulados">0</span>
-          <span class="resumen-label">Discipulados realizados</span>
-        </div>
-      </section>
+    <!-- TARJETAS RESUMEN -->
+    <section class="resumen">
+      <div class="tarjeta-resumen">
+        <span class="resumen-icono">👥</span>
+        <span class="resumen-numero" id="total-miembros">0</span>
+        <span class="resumen-label">Total miembros</span>
+      </div>
+      <div class="tarjeta-resumen">
+        <span class="resumen-icono">✅</span>
+        <span class="resumen-numero" id="total-activos">0</span>
+        <span class="resumen-label">Activos</span>
+      </div>
+      <div class="tarjeta-resumen">
+        <span class="resumen-icono">💧</span>
+        <span class="resumen-numero" id="total-bautizados">0</span>
+        <span class="resumen-label">Bautizados</span>
+      </div>
+      <div class="tarjeta-resumen">
+        <span class="resumen-icono">📖</span>
+        <span class="resumen-numero" id="total-discipulados">0</span>
+        <span class="resumen-label">Discipulados realizados</span>
+      </div>
+    </section>
 
-      <!-- FORMULARIO -->
-      <div class="tarjeta formulario-card" id="formulario-card">
+    <!-- GRÁFICOS -->
+    <div class="graficos-grid">
+
+      <div class="tarjeta grafico-card">
         <div class="tarjeta-header">
-          <h2 id="titulo-formulario">➕ Nuevo Miembro</h2>
+          <h2>📊 Estado de Miembros</h2>
         </div>
-
-        <div style="padding: 24px;">
-
-          <!-- SECCIÓN: Datos Personales -->
-          <div class="seccion-titulo">👤 Datos Personales</div>
-          <div class="formulario-grid">
-
-            <div class="campo campo-completo">
-              <label>Nombre completo *</label>
-              <input type="text" id="nombre" placeholder="Nombre y apellidos">
-            </div>
-
-            <div class="campo">
-              <label>Fecha de nacimiento</label>
-              <input type="date" id="fecha_nacimiento">
-            </div>
-
-            <div class="campo">
-              <label>Teléfono</label>
-              <input type="text" id="telefono" placeholder="+56 9 xxxx xxxx">
-            </div>
-
-            <div class="campo campo-completo">
-              <label>Dirección</label>
-              <input type="text" id="direccion" placeholder="Calle, número, ciudad">
-            </div>
-
-            <div class="campo campo-completo">
-              <label>Correo electrónico</label>
-              <input type="email" id="correo" placeholder="correo@ejemplo.com">
-            </div>
-
-          </div>
-
-          <!-- SECCIÓN: Datos de Membresía -->
-          <div class="seccion-titulo" style="margin-top: 24px;">⛪ Datos de Membresía</div>
-          <div class="formulario-grid">
-
-            <div class="campo">
-              <label>Fecha de registro *</label>
-              <input type="date" id="fecha_registro" onchange="calcularAniosIglesia()">
-            </div>
-
-            <!-- El campo años queda de solo lectura ya que se calcula automático -->
-            <div class="campo">
-              <label>Años en la iglesia</label>
-              <input type="number" id="anios_iglesia" min="0" placeholder="0" readonly
-                style="background-color: var(--fondo); cursor: not-allowed;">
-            </div>
-
-            <div class="campo">
-              <label>Tipo</label>
-              <select id="tipo">
-                <option value="miembro">Miembro</option>
-                <option value="asistente">Asistente regular</option>
-              </select>
-            </div>
-
-            <div class="campo">
-              <label>Estado</label>
-              <select id="estado">
-                <option value="activo">Activo</option>
-                <option value="inactivo">Inactivo</option>
-              </select>
-            </div>
-
-            <div class="campo">
-              <label>Bautizado</label>
-              <select id="bautizado">
-                <option value="no">No</option>
-                <option value="si">Sí</option>
-              </select>
-            </div>
-
-          </div>
-
-          <!-- SECCIÓN: Cargos -->
-          <div class="seccion-titulo" style="margin-top: 24px;">
-            🎖️ Cargos en la Iglesia
-            <button class="btn-gestionar" onclick="toggleGestionar('panel-cargos')">
-              ⚙️ Gestionar tipos
-            </button>
-          </div>
-
-          <!-- Panel gestión de cargos -->
-          <div id="panel-cargos" class="panel-gestion" style="display:none;">
-            <div class="panel-gestion-inner">
-              <div style="display:flex; gap:8px; margin-bottom:12px;">
-                <input type="text" id="nuevo-cargo" placeholder="Nuevo tipo de cargo..."
-                  style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
-                        border-radius:8px; font-family:'Poppins',sans-serif; font-size:13px;">
-                <button class="btn-guardar" style="padding:8px 16px; font-size:13px;"
-                  onclick="agregarTipoCargo()">Agregar</button>
-              </div>
-              <div id="lista-tipos-cargo"></div>
-            </div>
-          </div>
-
-          <div class="cargos-grid" id="cargos-grid"></div>
-
-          <!-- SECCIÓN: Discipulados -->
-          <div class="seccion-titulo" style="margin-top: 24px;">
-            📖 Discipulados Realizados
-            <button class="btn-gestionar" onclick="toggleGestionar('panel-discipulados')">
-              ⚙️ Gestionar tipos
-            </button>
-          </div>
-
-          <!-- Panel gestión de discipulados -->
-          <div id="panel-discipulados" class="panel-gestion" style="display:none;">
-            <div class="panel-gestion-inner">
-              <div style="display:flex; gap:8px; margin-bottom:12px;">
-                <input type="text" id="nuevo-discipulado" placeholder="Nuevo tipo de discipulado..."
-                  style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
-                        border-radius:8px; font-family:'Poppins',sans-serif; font-size:13px;">
-                <button class="btn-guardar" style="padding:8px 16px; font-size:13px;"
-                  onclick="agregarTipoDiscipulado()">Agregar</button>
-              </div>
-              <div id="lista-tipos-discipulado"></div>
-            </div>
-          </div>
-
-          <div id="lista-discipulados"></div>
-          <button class="btn-agregar-disc" onclick="agregarDiscipulado()">
-            ➕ Agregar discipulado
-          </button>
-
-          <!-- SECCIÓN: Otros datos -->
-          <div class="seccion-titulo" style="margin-top: 24px;">📝 Otros Datos</div>
-          <div class="campo">
-            <label>Notas adicionales</label>
-            <textarea id="otros_datos" rows="3"
-              style="width:100%; padding:10px; border:1.5px solid var(--borde);
-                     border-radius:8px; font-family:'Poppins',sans-serif;
-                     font-size:14px; resize:vertical; box-sizing:border-box;"
-              placeholder="Información adicional relevante..."></textarea>
-          </div>
-
-          <p class="mensaje-error" id="error" style="display:none; margin-top:12px;">
-            ⚠️ Nombre y fecha de registro son obligatorios.
-          </p>
-
-          <div class="botones" style="margin-top: 24px;">
-            <button class="btn-guardar" id="btn-principal" onclick="guardarMiembro()">
-              💾 Guardar Miembro
-            </button>
-            <button class="btn-cancelar" id="btn-cancelar"
-              onclick="cancelarEdicion()" style="display:none;">
-              Cancelar
-            </button>
-          </div>
-
+        <div class="grafico-contenedor">
+          <canvas id="grafico-estado"></canvas>
         </div>
       </div>
 
-      <!-- LISTA DE MIEMBROS -->
-      <div class="tarjeta">
-        <div class="tarjeta-header tabla-header">
-          <h2>👥 Lista de Miembros</h2>
-          <div class="tabla-acciones">
-            <input type="text" id="filtro-miembros"
-              placeholder="🔍 Buscar miembro..."
-              oninput="filtrarMiembros()"
-              style="padding:8px 12px; border:1.5px solid var(--borde);
-                     border-radius:8px; font-family:'Poppins',sans-serif;
-                     font-size:13px; width:200px;">
-            <select id="filtro-estado" onchange="filtrarMiembros()"
-              style="padding:8px 12px; border:1.5px solid var(--borde);
-                     border-radius:8px; font-family:'Poppins',sans-serif;
-                     font-size:13px;">
-              <option value="">Todos</option>
-              <option value="activo">Activos</option>
-              <option value="inactivo">Inactivos</option>
+      <div class="tarjeta grafico-card">
+        <div class="tarjeta-header">
+          <h2>📊 Tipo de Membresía</h2>
+        </div>
+        <div class="grafico-contenedor">
+          <canvas id="grafico-tipo"></canvas>
+        </div>
+      </div>
+
+      <div class="tarjeta grafico-card">
+        <div class="tarjeta-header">
+          <h2>💧 Bautizados</h2>
+        </div>
+        <div class="grafico-contenedor">
+          <canvas id="grafico-bautizados"></canvas>
+        </div>
+      </div>
+
+      <div class="tarjeta grafico-card">
+        <div class="tarjeta-header">
+          <h2>🎖️ Cargos más frecuentes</h2>
+        </div>
+        <div class="grafico-contenedor">
+          <canvas id="grafico-cargos"></canvas>
+        </div>
+      </div>
+
+      <div class="tarjeta grafico-card grafico-grande">
+        <div class="tarjeta-header">
+          <h2>📈 Crecimiento — Registros por Año</h2>
+        </div>
+        <div class="grafico-contenedor">
+          <canvas id="grafico-crecimiento"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FORMULARIO -->
+    <div class="tarjeta formulario-card" id="formulario-card">
+      <div class="tarjeta-header">
+        <h2 id="titulo-formulario">➕ Nuevo Miembro</h2>
+      </div>
+
+      <div style="padding: 24px;">
+
+        <!-- SECCIÓN: Datos Personales -->
+        <div class="seccion-titulo">👤 Datos Personales</div>
+        <div class="formulario-grid">
+
+          <div class="campo campo-completo">
+            <label>Nombre completo *</label>
+            <input type="text" id="nombre" placeholder="Nombre y apellidos">
+          </div>
+
+          <div class="campo">
+            <label>Fecha de nacimiento</label>
+            <input type="date" id="fecha_nacimiento">
+          </div>
+
+          <div class="campo">
+            <label>Teléfono</label>
+            <input type="text" id="telefono" placeholder="+56 9 xxxx xxxx">
+          </div>
+
+          <div class="campo campo-completo">
+            <label>Dirección</label>
+            <input type="text" id="direccion" placeholder="Calle, número, ciudad">
+          </div>
+
+          <div class="campo campo-completo">
+            <label>Correo electrónico</label>
+            <input type="email" id="correo" placeholder="correo@ejemplo.com">
+          </div>
+
+        </div>
+
+        <!-- SECCIÓN: Datos de Membresía -->
+        <div class="seccion-titulo" style="margin-top: 24px;">⛪ Datos de Membresía</div>
+        <div class="formulario-grid">
+
+          <div class="campo">
+            <label>Fecha de registro *</label>
+            <input type="date" id="fecha_registro" onchange="calcularAniosIglesia()">
+          </div>
+
+          <!-- El campo años queda de solo lectura ya que se calcula automático -->
+          <div class="campo">
+            <label>Años en la iglesia</label>
+            <input type="number" id="anios_iglesia" min="0" placeholder="0" readonly
+              style="background-color: var(--fondo); cursor: not-allowed;">
+          </div>
+
+          <div class="campo">
+            <label>Tipo</label>
+            <select id="tipo">
+              <option value="miembro">Miembro</option>
+              <option value="asistente">Asistente regular</option>
             </select>
           </div>
+
+          <div class="campo">
+            <label>Estado</label>
+            <select id="estado">
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label>Bautizado</label>
+            <select id="bautizado">
+              <option value="no">No</option>
+              <option value="si">Sí</option>
+            </select>
+          </div>
+
         </div>
 
-        <div class="tabla-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Tipo</th>
-                <th>Estado</th>
-                <th>Cargos</th>
-                <th>Bautizado</th>
-                <th>Discipulados</th>
-                <th>Teléfono</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="cuerpo-tabla-miembros">
-              <tr>
-                <td colspan="8" class="sin-registros">No hay miembros registrados aún.</td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- SECCIÓN: Cargos -->
+        <div class="seccion-titulo" style="margin-top: 24px;">
+          🎖️ Cargos en la Iglesia
+          <button class="btn-gestionar" onclick="toggleGestionar('panel-cargos')">
+            ⚙️ Gestionar tipos
+          </button>
+        </div>
+
+        <!-- Panel gestión de cargos -->
+        <div id="panel-cargos" class="panel-gestion" style="display:none;">
+          <div class="panel-gestion-inner">
+            <div style="display:flex; gap:8px; margin-bottom:12px;">
+              <input type="text" id="nuevo-cargo" placeholder="Nuevo tipo de cargo..." style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
+                        border-radius:8px; font-family:'Poppins',sans-serif; font-size:13px;">
+              <button class="btn-guardar" style="padding:8px 16px; font-size:13px;"
+                onclick="agregarTipoCargo()">Agregar</button>
+            </div>
+            <div id="lista-tipos-cargo"></div>
+          </div>
+        </div>
+
+        <div class="cargos-grid" id="cargos-grid"></div>
+
+        <!-- SECCIÓN: Discipulados -->
+        <div class="seccion-titulo" style="margin-top: 24px;">
+          📖 Discipulados Realizados
+          <button class="btn-gestionar" onclick="toggleGestionar('panel-discipulados')">
+            ⚙️ Gestionar tipos
+          </button>
+        </div>
+
+        <!-- Panel gestión de discipulados -->
+        <div id="panel-discipulados" class="panel-gestion" style="display:none;">
+          <div class="panel-gestion-inner">
+            <div style="display:flex; gap:8px; margin-bottom:12px;">
+              <input type="text" id="nuevo-discipulado" placeholder="Nuevo tipo de discipulado..." style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
+                        border-radius:8px; font-family:'Poppins',sans-serif; font-size:13px;">
+              <button class="btn-guardar" style="padding:8px 16px; font-size:13px;"
+                onclick="agregarTipoDiscipulado()">Agregar</button>
+            </div>
+            <div id="lista-tipos-discipulado"></div>
+          </div>
+        </div>
+
+        <div id="lista-discipulados"></div>
+        <button class="btn-agregar-disc" onclick="agregarDiscipulado()">
+          ➕ Agregar discipulado
+        </button>
+
+        <!-- SECCIÓN: Otros datos -->
+        <div class="seccion-titulo" style="margin-top: 24px;">📝 Otros Datos</div>
+        <div class="campo">
+          <label>Notas adicionales</label>
+          <textarea id="otros_datos" rows="3" style="width:100%; padding:10px; border:1.5px solid var(--borde);
+                     border-radius:8px; font-family:'Poppins',sans-serif;
+                     font-size:14px; resize:vertical; box-sizing:border-box;"
+            placeholder="Información adicional relevante..."></textarea>
+        </div>
+
+        <p class="mensaje-error" id="error" style="display:none; margin-top:12px;">
+          ⚠️ Nombre y fecha de registro son obligatorios.
+        </p>
+
+        <div class="botones" style="margin-top: 24px;">
+          <button class="btn-guardar" id="btn-principal" onclick="guardarMiembro()">
+            💾 Guardar Miembro
+          </button>
+          <button class="btn-cancelar" id="btn-cancelar" onclick="cancelarEdicion()" style="display:none;">
+            Cancelar
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- LISTA DE MIEMBROS -->
+    <div class="tarjeta">
+      <div class="tarjeta-header tabla-header">
+        <h2>👥 Lista de Miembros</h2>
+        <div class="tabla-acciones">
+          <input type="text" id="filtro-miembros" placeholder="🔍 Buscar miembro..." oninput="filtrarMiembros()" style="padding:8px 12px; border:1.5px solid var(--borde);
+                     border-radius:8px; font-family:'Poppins',sans-serif;
+                     font-size:13px; width:200px;">
+          <select id="filtro-estado" onchange="filtrarMiembros()" style="padding:8px 12px; border:1.5px solid var(--borde);
+                     border-radius:8px; font-family:'Poppins',sans-serif;
+                     font-size:13px;">
+            <option value="">Todos</option>
+            <option value="activo">Activos</option>
+            <option value="inactivo">Inactivos</option>
+          </select>
         </div>
       </div>
 
-    </main>
+      <div class="tabla-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+              <th>Cargos</th>
+              <th>Bautizado</th>
+              <th>Discipulados</th>
+              <th>Teléfono</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpo-tabla-miembros">
+            <tr>
+              <td colspan="8" class="sin-registros">No hay miembros registrados aún.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-    <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker.register("/sw.js")
-        })
-      }
-    </script>
-    <script src="auth.js"></script>
-    <script src="miembros.js"></script>
+  </main>
 
-  </body>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js")
+      })
+    }
+  </script>
+  <script src="auth.js"></script>
+  <script src="miembros.js"></script>
+
+</body>
+
 </html>

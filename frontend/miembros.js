@@ -132,6 +132,7 @@ async function cargarMiembros() {
   miembros = await r.json()
   actualizarResumen()
   renderizarTabla(miembros)
+  dibujarGraficos()        // ← agrega esta línea
 }
 
 // ─── Resumen estadístico ──────────────────────────────────────────
@@ -145,6 +146,254 @@ function actualizarResumen() {
   document.getElementById("total-activos").textContent     = activos
   document.getElementById("total-bautizados").textContent  = bautizados
   document.getElementById("total-discipulados").textContent = discTotal
+}
+
+// ─── Dibujar todos los gráficos ───────────────────────────────────
+let graficos = {}
+
+function dibujarGraficos() {
+  if (miembros.length === 0) return
+
+  dibujarDonaEstado()
+  dibujarDonaTipo()
+  dibujarDonaBautizados()
+  dibujarBarrasCargos()
+  dibujarLineaCrecimiento()
+}
+
+// ─── Colores paleta borgoña ───────────────────────────────────────
+const COLORES = {
+  borgoña:    "#8B2635",
+  borgoñaClaro: "#F5E8EB",
+  dorado:     "#C67B2F",
+  doradoClaro: "#FDF3E7",
+  verde:      "#2D6A4F",
+  verdeClaro: "#D8F3DC",
+  morado:     "#5B3A6B",
+  moradoClaro: "#EDE0F5",
+  gris:       "#7A6058",
+  grisClaro:  "#F5EFE6"
+}
+
+// ─── Gráfico 1: Estado (Activo/Inactivo) ─────────────────────────
+function dibujarDonaEstado() {
+  const activos   = miembros.filter(m => m.estado === "activo").length
+  const inactivos = miembros.length - activos
+
+  if (graficos.estado) graficos.estado.destroy()
+
+  graficos.estado = new Chart(
+    document.getElementById("grafico-estado"), {
+      type: "doughnut",
+      data: {
+        labels: ["Activos", "Inactivos"],
+        datasets: [{
+          data: [activos, inactivos],
+          backgroundColor: [COLORES.verde, COLORES.gris],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: { padding: 16, font: { family: "Poppins", size: 12 } }
+          }
+        }
+      }
+    }
+  )
+}
+
+// ─── Gráfico 2: Tipo (Miembro/Asistente) ─────────────────────────
+function dibujarDonaTipo() {
+  const miembrosCount   = miembros.filter(m => m.tipo === "miembro").length
+  const asistentesCount = miembros.length - miembrosCount
+
+  if (graficos.tipo) graficos.tipo.destroy()
+
+  graficos.tipo = new Chart(
+    document.getElementById("grafico-tipo"), {
+      type: "doughnut",
+      data: {
+        labels: ["Miembros", "Asistentes"],
+        datasets: [{
+          data: [miembrosCount, asistentesCount],
+          backgroundColor: [COLORES.borgoña, COLORES.dorado],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: { padding: 16, font: { family: "Poppins", size: 12 } }
+          }
+        }
+      }
+    }
+  )
+}
+
+// ─── Gráfico 3: Bautizados ────────────────────────────────────────
+function dibujarDonaBautizados() {
+  const bautizados    = miembros.filter(m => m.bautizado === "si").length
+  const noBautizados  = miembros.length - bautizados
+
+  if (graficos.bautizados) graficos.bautizados.destroy()
+
+  graficos.bautizados = new Chart(
+    document.getElementById("grafico-bautizados"), {
+      type: "doughnut",
+      data: {
+        labels: ["Bautizados", "No bautizados"],
+        datasets: [{
+          data: [bautizados, noBautizados],
+          backgroundColor: [COLORES.morado, COLORES.gris],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: { padding: 16, font: { family: "Poppins", size: 12 } }
+          }
+        }
+      }
+    }
+  )
+}
+
+// ─── Gráfico 4: Cargos más frecuentes ────────────────────────────
+function dibujarBarrasCargos() {
+  const conteo = {}
+
+  for (const m of miembros) {
+    for (const c of m.cargos) {
+      conteo[c.cargo] = (conteo[c.cargo] || 0) + 1
+    }
+  }
+
+  // Ordenar de mayor a menor y tomar los top 8
+  const ordenados = Object.entries(conteo)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+
+  const labels = ordenados.map(([cargo]) => cargo)
+  const data   = ordenados.map(([, count]) => count)
+
+  if (graficos.cargos) graficos.cargos.destroy()
+
+  graficos.cargos = new Chart(
+    document.getElementById("grafico-cargos"), {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [{
+          label: "Cantidad",
+          data,
+          backgroundColor: COLORES.borgoña,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1,
+              font: { family: "Poppins" }
+            }
+          },
+          x: {
+            ticks: {
+              font: { family: "Poppins", size: 11 },
+              maxRotation: 45
+            }
+          }
+        }
+      }
+    }
+  )
+}
+
+// ─── Gráfico 5: Crecimiento por año ──────────────────────────────
+function dibujarLineaCrecimiento() {
+  const porAnio = {}
+
+  for (const m of miembros) {
+    if (!m.fecha_registro) continue
+    const anio = m.fecha_registro.substring(0, 4)
+    porAnio[anio] = (porAnio[anio] || 0) + 1
+  }
+
+  const aniosOrdenados = Object.keys(porAnio).sort()
+  const labels         = aniosOrdenados
+  const data           = aniosOrdenados.map(a => porAnio[a])
+
+  // Acumulado
+  const dataAcumulado = []
+  let acum = 0
+  for (const d of data) {
+    acum += d
+    dataAcumulado.push(acum)
+  }
+
+  if (graficos.crecimiento) graficos.crecimiento.destroy()
+
+  graficos.crecimiento = new Chart(
+    document.getElementById("grafico-crecimiento"), {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: "Nuevos registros",
+            data,
+            borderColor: COLORES.dorado,
+            backgroundColor: COLORES.doradoClaro,
+            borderWidth: 2,
+            pointBackgroundColor: COLORES.dorado,
+            pointRadius: 5,
+            fill: true,
+            tension: 0.3
+          },
+          {
+            label: "Total acumulado",
+            data: dataAcumulado,
+            borderColor: COLORES.borgoña,
+            backgroundColor: "rgba(139,38,53,0.08)",
+            borderWidth: 2,
+            pointBackgroundColor: COLORES.borgoña,
+            pointRadius: 5,
+            fill: true,
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: { padding: 16, font: { family: "Poppins", size: 12 } }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1, font: { family: "Poppins" } }
+          }
+        }
+      }
+    }
+  )
 }
 
 // ─── Renderizar tabla ─────────────────────────────────────────────
