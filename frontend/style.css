@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════
-   IGLESIA APP — style.css
-   Iglesia del Nazareno Los Lobos — Talcahuano
+   NAZARAPP — style.css
+   Iglesia del Nazareno "Los Lobos" — Talcahuano
 ═══════════════════════════════════════════════════════════════════ */
 
 /* ─── Variables de color ──────────────────────────────────────────── */
@@ -93,6 +93,20 @@ header {
   border-bottom: 1px solid var(--borde);
   width: 100%;
 }
+
+/* Contenedor interno — centra los links igual que el header */
+.navegacion-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.navegacion-inner::-webkit-scrollbar { display: none; }
 
 .nav-link {
   padding: 14px 20px;
@@ -250,9 +264,9 @@ input:focus, select:focus {
   transition: background-color 0.2s;
 }
 
-.btn-guardar:hover    { background-color: var(--azul-oscuro); }
-.btn-guardar.editando { background-color: var(--naranja); }
-.btn-guardar.editando:hover { background-color: #d97706; }
+.btn-guardar:hover           { background-color: var(--azul-oscuro); }
+.btn-guardar.editando        { background-color: var(--naranja); }
+.btn-guardar.editando:hover  { background-color: #d97706; }
 
 .btn-cancelar {
   flex: 1;
@@ -279,7 +293,10 @@ input:focus, select:focus {
 }
 
 /* ─── Tabla ──────────────────────────────────────────────────────── */
-.tabla-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tabla-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 table {
   width: 100%;
@@ -306,8 +323,8 @@ td {
   color: var(--texto);
 }
 
-tr:last-child td  { border-bottom: none; }
-tr:hover td       { background-color: var(--azul-claro); }
+tr:last-child td    { border-bottom: none; }
+tr:hover td         { background-color: var(--azul-claro); }
 tr.editando-fila td { background-color: #fef9c3 !important; }
 
 .sin-registros {
@@ -423,7 +440,7 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 
 .filtro-grupo input { padding: 8px 12px; font-size: 13px; }
 
-.filtro-boton       { justify-content: flex-end; }
+.filtro-boton { justify-content: flex-end; }
 
 .btn-limpiar-filtros {
   padding: 8px 14px;
@@ -475,10 +492,10 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   max-width: 400px;
 }
 
-.login-header       { text-align: center; margin-bottom: 24px; }
-.login-icono        { font-size: 48px; margin-bottom: 12px; }
-.login-header h1    { font-size: 20px; font-weight: 700; color: var(--texto); }
-.login-header p     { font-size: 13px; color: var(--texto-suave); margin-top: 4px; }
+.login-header    { text-align: center; margin-bottom: 24px; }
+.login-icono     { font-size: 48px; margin-bottom: 12px; }
+.login-header h1 { font-size: 20px; font-weight: 700; color: var(--texto); }
+.login-header p  { font-size: 13px; color: var(--texto-suave); margin-top: 4px; }
 
 /* ─── Dashboard gráficos ─────────────────────────────────────────── */
 .graficos-grid {
@@ -487,9 +504,9 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   gap: 24px;
 }
 
-.grafico-card        { display: flex; flex-direction: column; }
-.grafico-grande      { grid-column: 1 / -1; }
-.grafico-contenedor  { padding: 20px; flex: 1; }
+.grafico-card       { display: flex; flex-direction: column; }
+.grafico-grande     { grid-column: 1 / -1; }
+.grafico-contenedor { padding: 20px; flex: 1; }
 
 /* ─── Fecha emisión (solo print) ─────────────────────────────────── */
 .fecha-emision {
@@ -684,12 +701,6 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 
   .header-usuario { width: 100%; justify-content: flex-end; }
 
-  .navegacion {
-    background-color: var(--blanco);
-    border-bottom: 1px solid var(--borde);
-    padding: 0;                    /* ← quitamos el padding directo */
-  }
-
   main { padding: 20px 16px; }
 
   .resumen { grid-template-columns: repeat(2, 1fr); }
@@ -719,13 +730,31 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
 /* Móvil (480px) */
 @media (max-width: 480px) {
 
-  .header-texto h1 { font-size: 16px; }
-  .header-texto p  { font-size: 11px; }
-  .header-icono    { font-size: 28px; }
+  header { padding: 12px 16px; }
+
+  .header-contenido { gap: 8px; }
+
+  .header-icono { font-size: 24px; }
+
+  .header-texto h1 { font-size: 15px; }
+
+  .header-texto p  { display: none; }
+
+  .header-usuario span {
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .nav-link { padding: 12px 14px; font-size: 13px; }
 
   .resumen        { grid-template-columns: repeat(2, 1fr); }
   .resumen-numero { font-size: 24px; }
   .resumen-label  { font-size: 11px; }
+  .resumen-icono  { font-size: 20px; }
+
+  .tarjeta-resumen { padding: 14px 10px; }
 
   .filtros-container { grid-template-columns: 1fr; }
 
@@ -737,31 +766,14 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   .btn-guardar,
   .btn-cancelar   { width: 100%; }
 
-  table { min-width: 600px; }
+  .formulario-card .formulario-grid { padding: 16px; }
+
+  .botones { padding: 0 16px 16px; }
+
+  table   { min-width: 600px; }
+  td, th  { padding: 10px 12px; font-size: 12px; }
 
   .body-login { padding: 16px; }
-
-  .navegacion {
-    background-color: var(--blanco);
-    border-bottom: 1px solid var(--borde);
-    width: 100%;
-  }
-
-  /* Nuevo contenedor interno de la navegación */
-  .navegacion-inner {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 20px;
-    display: flex;
-    gap: 4px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .navegacion-inner::-webkit-scrollbar { display: none; }
-
-  .nav-link { padding: 12px 14px; font-size: 13px; }
 }
 
 /* Pantallas muy pequeñas (360px) */
@@ -782,9 +794,9 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   .btn-editar,
   .btn-eliminar,
   th:last-child,
-  td:last-child     { display: none !important; }
+  td:last-child { display: none !important; }
 
-  body   { background-color: white; padding: 0; }
+  body { background-color: white; padding: 0; }
 
   header {
     background: #1d4ed8 !important;
@@ -803,7 +815,7 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
     print-color-adjust: exact;
   }
 
-  table  { border: 1px solid #e2e8f0; }
+  table { border: 1px solid #e2e8f0; }
 
   th {
     background-color: #f1f5f9 !important;
@@ -812,51 +824,11 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
     print-color-adjust: exact;
   }
 
-  td     { border: 1px solid #e2e8f0; }
-  tr     { page-break-inside: avoid; }
+  td  { border: 1px solid #e2e8f0; }
+  tr  { page-break-inside: avoid; }
 
   .tarjeta,
   .tarjeta-resumen { box-shadow: none; border: 1px solid #e2e8f0; }
 
   .fecha-emision { display: block !important; }
-}
-
-
-/* 🔧 Mejoras adicionales para móvil */
-@media (max-width: 480px) {
-
-  /* ... lo que ya tienes ... */
-
-  /* Header más compacto */
-  header { padding: 12px 16px; }
-
-  .header-contenido { gap: 8px; }
-
-  .header-icono { font-size: 24px; }
-
-  .header-texto h1 { font-size: 15px; }
-
-  .header-texto p  { display: none; } /* ocultar subtítulo en móvil */
-
-  /* Nombre usuario más corto */
-  .header-usuario span {
-    max-width: 80px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  /* Cards resumen más compactas */
-  .tarjeta-resumen { padding: 14px 10px; }
-
-  .resumen-icono  { font-size: 20px; }
-  .resumen-numero { font-size: 22px; }
-
-  /* Formulario padding reducido */
-  .formulario-card .formulario-grid { padding: 16px; }
-
-  .botones { padding: 0 16px 16px; }
-
-  /* Tabla */
-  td, th { padding: 10px 12px; font-size: 12px; }
 }
