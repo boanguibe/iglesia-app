@@ -1,4 +1,4 @@
-const CACHE_NAME    = "nazarapp-v2"
+const CACHE_NAME    = "nazarapp-v2.1"
 const CACHE_URLS = [
   "/",
   "/index.html",

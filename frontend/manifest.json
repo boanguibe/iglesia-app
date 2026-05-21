@@ -4,8 +4,8 @@
   "description": "Gestión integral de la Iglesia del Nazareno Los Lobos Talcahuano",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f1f5f9",
-  "theme_color": "#1d4ed8",
+  "background_color": "#F5EFE6",
+  "theme_color": "#8B2635",
   "orientation": "portrait",
   "icons": [
     {
