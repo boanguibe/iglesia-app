@@ -628,3 +628,87 @@ function cancelarEdicion() {
   limpiarFormulario()
   modoNuevo()
 }
+
+// ─── Exportar miembros a Excel ────────────────────────────────────
+function exportarMiembrosExcel() {
+  if (miembros.length === 0) {
+    alert("No hay miembros para exportar.")
+    return
+  }
+
+  // Encabezados
+  const datos = [[
+    "Nombre", "Tipo", "Estado", "Fecha Registro",
+    "Fecha Nacimiento", "Años Iglesia", "Bautizado",
+    "Cargos", "Discipulados", "Teléfono", "Correo",
+    "Dirección", "Otros datos"
+  ]]
+
+  // Filas
+  for (const m of miembros) {
+    const cargos      = m.cargos.map(c => c.cargo).join(", ")
+    const discipulados = m.discipulados
+      .map(d => d.nombre_discipulado).join(", ")
+
+    datos.push([
+      m.nombre,
+      m.tipo === "miembro" ? "Miembro" : "Asistente regular",
+      m.estado === "activo" ? "Activo" : "Inactivo",
+      m.fecha_registro     || "",
+      m.fecha_nacimiento   || "",
+      m.anios_iglesia      || 0,
+      m.bautizado === "si" ? "Sí" : "No",
+      cargos               || "Sin cargo",
+      discipulados         || "Ninguno",
+      m.telefono           || "",
+      m.correo             || "",
+      m.direccion          || "",
+      m.otros_datos        || ""
+    ])
+  }
+
+  // Fila resumen al final
+  const activos    = miembros.filter(m => m.estado === "activo").length
+  const bautizados = miembros.filter(m => m.bautizado === "si").length
+  datos.push([])
+  datos.push([
+    `Total: ${miembros.length} miembros`,
+    `Activos: ${activos}`,
+    `Inactivos: ${miembros.length - activos}`,
+    `Bautizados: ${bautizados}`,
+    "", "", "", "", "", "", "", "", ""
+  ])
+
+  // Crear Excel
+  const hoja  = XLSX.utils.aoa_to_sheet(datos)
+  const libro = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(libro, hoja, "Miembros")
+
+  const fecha         = new Date().toISOString().split("T")[0]
+  const nombreArchivo = `miembros-nazarapp-${fecha}.xlsx`
+  XLSX.writeFile(libro, nombreArchivo)
+}
+
+// ─── Imprimir lista de miembros ───────────────────────────────────
+function imprimirMiembros() {
+  if (miembros.length === 0) {
+    alert("No hay miembros para imprimir.")
+    return
+  }
+
+  const hoy        = new Date()
+  const opciones   = { year: "numeric", month: "long", day: "numeric" }
+  const fechaTexto = hoy.toLocaleDateString("es-CL", opciones)
+
+  // Insertar o actualizar fecha de emisión
+  let fechaEl = document.getElementById("fecha-emision-miembros")
+  if (!fechaEl) {
+    fechaEl           = document.createElement("p")
+    fechaEl.id        = "fecha-emision-miembros"
+    fechaEl.className = "fecha-emision"
+    document.querySelector(".tabla-wrapper").before(fechaEl)
+  }
+  fechaEl.textContent = `Emitido el ${fechaTexto} — Total: ${miembros.length} miembros`
+
+  window.print()
+}

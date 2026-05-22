@@ -14,6 +14,7 @@
   <meta name="apple-mobile-web-app-title" content="Iglesia App">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 
 <body>
@@ -278,15 +279,17 @@
         <h2>👥 Lista de Miembros</h2>
         <div class="tabla-acciones">
           <input type="text" id="filtro-miembros" placeholder="🔍 Buscar miembro..." oninput="filtrarMiembros()" style="padding:8px 12px; border:1.5px solid var(--borde);
-                     border-radius:8px; font-family:'Poppins',sans-serif;
-                     font-size:13px; width:200px;">
+             border-radius:8px; font-family:'Poppins',sans-serif;
+             font-size:13px; width:200px;">
           <select id="filtro-estado" onchange="filtrarMiembros()" style="padding:8px 12px; border:1.5px solid var(--borde);
-                     border-radius:8px; font-family:'Poppins',sans-serif;
-                     font-size:13px;">
+             border-radius:8px; font-family:'Poppins',sans-serif;
+             font-size:13px;">
             <option value="">Todos</option>
             <option value="activo">Activos</option>
             <option value="inactivo">Inactivos</option>
           </select>
+          <button class="btn-excel" onclick="exportarMiembrosExcel()">📥 Excel</button>
+          <button class="btn-imprimir" onclick="imprimirMiembros()">🖨️ Imprimir</button>
         </div>
       </div>
 
