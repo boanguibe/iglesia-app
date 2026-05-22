@@ -7,13 +7,11 @@
   <title>NazarApp — Miembros</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <!-- PWA -->
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#8B2635">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Iglesia App">
+  <meta name="apple-mobile-web-app-title" content="NazarApp">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 
@@ -32,11 +30,12 @@
       </div>
     </div>
   </header>
+
   <nav class="navegacion">
     <div class="navegacion-inner">
-      <a href="/" class="nav-link">📋 Registros</a>
-      <a href="/dashboard.html" class="nav-link">📊 Asistencia</a>
-      <a href="/miembros.html" class="nav-link activo">👥 Miembros</a>
+      <a href="/"                  class="nav-link">📋 Registros</a>
+      <a href="/dashboard.html"    class="nav-link">📊 Asistencia</a>
+      <a href="/miembros.html"     class="nav-link activo">👥 Miembros</a>
       <a href="/estadisticas.html" class="nav-link">📈 Estadísticas</a>
     </div>
   </nav>
@@ -44,7 +43,7 @@
   <main>
 
     <!-- TARJETAS RESUMEN -->
-    <section class="resumen">
+    <section class="resumen resumen-4">
       <div class="tarjeta-resumen">
         <span class="resumen-icono">👥</span>
         <span class="resumen-numero" id="total-miembros">0</span>
@@ -66,56 +65,6 @@
         <span class="resumen-label">Discipulados realizados</span>
       </div>
     </section>
-
-    <!-- GRÁFICOS -->
-    <div class="graficos-grid">
-
-      <div class="tarjeta grafico-card">
-        <div class="tarjeta-header">
-          <h2>📊 Estado de Miembros</h2>
-        </div>
-        <div class="grafico-contenedor">
-          <canvas id="grafico-estado"></canvas>
-        </div>
-      </div>
-
-      <div class="tarjeta grafico-card">
-        <div class="tarjeta-header">
-          <h2>📊 Tipo de Membresía</h2>
-        </div>
-        <div class="grafico-contenedor">
-          <canvas id="grafico-tipo"></canvas>
-        </div>
-      </div>
-
-      <div class="tarjeta grafico-card">
-        <div class="tarjeta-header">
-          <h2>💧 Bautizados</h2>
-        </div>
-        <div class="grafico-contenedor">
-          <canvas id="grafico-bautizados"></canvas>
-        </div>
-      </div>
-
-      <div class="tarjeta grafico-card">
-        <div class="tarjeta-header">
-          <h2>🎖️ Cargos más frecuentes</h2>
-        </div>
-        <div class="grafico-contenedor">
-          <canvas id="grafico-cargos"></canvas>
-        </div>
-      </div>
-
-      <div class="tarjeta grafico-card grafico-grande">
-        <div class="tarjeta-header">
-          <h2>📈 Crecimiento — Registros por Año</h2>
-        </div>
-        <div class="grafico-contenedor">
-          <canvas id="grafico-crecimiento"></canvas>
-        </div>
-      </div>
-
-    </div>
 
     <!-- FORMULARIO -->
     <div class="tarjeta formulario-card" id="formulario-card">
@@ -165,7 +114,6 @@
             <input type="date" id="fecha_registro" onchange="calcularAniosIglesia()">
           </div>
 
-          <!-- El campo años queda de solo lectura ya que se calcula automático -->
           <div class="campo">
             <label>Años en la iglesia</label>
             <input type="number" id="anios_iglesia" min="0" placeholder="0" readonly
@@ -206,12 +154,12 @@
           </button>
         </div>
 
-        <!-- Panel gestión de cargos -->
         <div id="panel-cargos" class="panel-gestion" style="display:none;">
           <div class="panel-gestion-inner">
             <div style="display:flex; gap:8px; margin-bottom:12px;">
-              <input type="text" id="nuevo-cargo" placeholder="Nuevo tipo de cargo..." style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
-                        border-radius:8px; font-family:'Poppins',sans-serif; font-size:13px;">
+              <input type="text" id="nuevo-cargo" placeholder="Nuevo tipo de cargo..."
+                style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
+                       border-radius:8px; font-family:'Poppins',sans-serif; font-size:13px;">
               <button class="btn-guardar" style="padding:8px 16px; font-size:13px;"
                 onclick="agregarTipoCargo()">Agregar</button>
             </div>
@@ -229,12 +177,12 @@
           </button>
         </div>
 
-        <!-- Panel gestión de discipulados -->
         <div id="panel-discipulados" class="panel-gestion" style="display:none;">
           <div class="panel-gestion-inner">
             <div style="display:flex; gap:8px; margin-bottom:12px;">
-              <input type="text" id="nuevo-discipulado" placeholder="Nuevo tipo de discipulado..." style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
-                        border-radius:8px; font-family:'Poppins',sans-serif; font-size:13px;">
+              <input type="text" id="nuevo-discipulado" placeholder="Nuevo tipo de discipulado..."
+                style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
+                       border-radius:8px; font-family:'Poppins',sans-serif; font-size:13px;">
               <button class="btn-guardar" style="padding:8px 16px; font-size:13px;"
                 onclick="agregarTipoDiscipulado()">Agregar</button>
             </div>
@@ -251,9 +199,10 @@
         <div class="seccion-titulo" style="margin-top: 24px;">📝 Otros Datos</div>
         <div class="campo">
           <label>Notas adicionales</label>
-          <textarea id="otros_datos" rows="3" style="width:100%; padding:10px; border:1.5px solid var(--borde);
-                     border-radius:8px; font-family:'Poppins',sans-serif;
-                     font-size:14px; resize:vertical; box-sizing:border-box;"
+          <textarea id="otros_datos" rows="3"
+            style="width:100%; padding:10px; border:1.5px solid var(--borde);
+                   border-radius:8px; font-family:'Poppins',sans-serif;
+                   font-size:14px; resize:vertical; box-sizing:border-box;"
             placeholder="Información adicional relevante..."></textarea>
         </div>
 
@@ -265,7 +214,8 @@
           <button class="btn-guardar" id="btn-principal" onclick="guardarMiembro()">
             💾 Guardar Miembro
           </button>
-          <button class="btn-cancelar" id="btn-cancelar" onclick="cancelarEdicion()" style="display:none;">
+          <button class="btn-cancelar" id="btn-cancelar"
+            onclick="cancelarEdicion()" style="display:none;">
             Cancelar
           </button>
         </div>
@@ -278,17 +228,21 @@
       <div class="tarjeta-header tabla-header">
         <h2>👥 Lista de Miembros</h2>
         <div class="tabla-acciones">
-          <input type="text" id="filtro-miembros" placeholder="🔍 Buscar miembro..." oninput="filtrarMiembros()" style="padding:8px 12px; border:1.5px solid var(--borde);
-             border-radius:8px; font-family:'Poppins',sans-serif;
-             font-size:13px; width:200px;">
-          <select id="filtro-estado" onchange="filtrarMiembros()" style="padding:8px 12px; border:1.5px solid var(--borde);
-             border-radius:8px; font-family:'Poppins',sans-serif;
-             font-size:13px;">
+          <input type="text" id="filtro-miembros"
+            placeholder="🔍 Buscar miembro..."
+            oninput="filtrarMiembros()"
+            style="padding:8px 12px; border:1.5px solid var(--borde);
+                   border-radius:8px; font-family:'Poppins',sans-serif;
+                   font-size:13px; width:200px;">
+          <select id="filtro-estado" onchange="filtrarMiembros()"
+            style="padding:8px 12px; border:1.5px solid var(--borde);
+                   border-radius:8px; font-family:'Poppins',sans-serif;
+                   font-size:13px;">
             <option value="">Todos</option>
             <option value="activo">Activos</option>
             <option value="inactivo">Inactivos</option>
           </select>
-          <button class="btn-excel" onclick="exportarMiembrosExcel()">📥 Excel</button>
+          <button class="btn-excel"    onclick="exportarMiembrosExcel()">📥 Excel</button>
           <button class="btn-imprimir" onclick="imprimirMiembros()">🖨️ Imprimir</button>
         </div>
       </div>
@@ -314,6 +268,7 @@
           </tbody>
         </table>
       </div>
+
     </div>
 
   </main>
@@ -329,5 +284,4 @@
   <script src="miembros.js"></script>
 
 </body>
-
 </html>
