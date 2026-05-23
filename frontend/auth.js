@@ -28,18 +28,29 @@ const PERMISOS = {
 
 function requireLogin() {
   const token = obtenerToken()
+
+  // Sin token → ir al login
   if (!token) {
     window.location.href = "/login.html"
     return false
   }
 
+  // Token sin rol → forzar nuevo login
+  const rol = obtenerRol()
+  if (!rol) {
+    cerrarSesion()   // limpia localStorage y redirige al login
+    return false
+  }
+
   // Verificar permiso para esta página
-  const pagina  = window.location.pathname
-  const rol     = obtenerRol()
+  const pagina     = window.location.pathname
   const permitidos = PERMISOS[pagina] || ["admin"]
 
   if (!permitidos.includes(rol)) {
-    window.location.href = "/"
+    // No tiene permiso → ir al inicio, no crear loop
+    if (pagina !== "/" && pagina !== "/index.html") {
+      window.location.href = "/"
+    }
     return false
   }
 
