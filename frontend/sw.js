@@ -1,4 +1,4 @@
-const CACHE_NAME = "nazarapp-v5.1"
+const CACHE_NAME = "nazarapp-v7"
 
 const CACHE_URLS = [
   "/",
@@ -6,13 +6,15 @@ const CACHE_URLS = [
   "/dashboard.html",
   "/login.html",
   "/miembros.html",
-  "/estadisticas.html",      // ← nuevo
+  "/estadisticas.html",
+  "/usuarios.html",       // ← nuevo
   "/style.css",
   "/app.js",
   "/auth.js",
   "/dashboard.js",
   "/miembros.js",
-  "/estadisticas.js",        // ← nuevo
+  "/estadisticas.js",
+  "/usuarios.js",         // ← nuevo
   "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap",
   "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
   "https://cdn.jsdelivr.net/npm/chart.js"

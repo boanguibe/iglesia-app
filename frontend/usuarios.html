@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NazarApp — Usuarios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#8B2635">
+  </head>
+  <body>
+
+    <header>
+      <div class="header-contenido">
+        <div class="header-icono">✝️</div>
+        <div class="header-texto">
+          <h1>NazarApp</h1>
+          <p>Iglesia del Nazareno "Los Lobos" — Talcahuano</p>
+        </div>
+        <div class="header-usuario">
+          <span id="rol-badge" class="rol-badge" style="display:none;"></span>
+          <span id="nombre-usuario"></span>
+          <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
+      </div>
+    </header>
+
+    <nav class="navegacion">
+      <div class="navegacion-inner">
+        <a href="/"                  id="nav-registros"    class="nav-link">📋 Registros</a>
+        <a href="/dashboard.html"    id="nav-dashboard"    class="nav-link">📊 Asistencia</a>
+        <a href="/miembros.html"     id="nav-miembros"     class="nav-link">👥 Miembros</a>
+        <a href="/estadisticas.html" id="nav-estadisticas" class="nav-link">📈 Estadísticas</a>
+        <a href="/usuarios.html"     id="nav-usuarios"     class="nav-link activo">⚙️ Usuarios</a>
+      </div>
+    </nav>
+
+    <main>
+
+      <!-- FORMULARIO -->
+      <div class="tarjeta formulario-card">
+        <div class="tarjeta-header">
+          <h2 id="titulo-formulario">➕ Nuevo Usuario</h2>
+        </div>
+
+        <div class="formulario-grid" style="padding: 24px;">
+
+          <div class="campo">
+            <label>Nombre completo *</label>
+            <input type="text" id="u-nombre" placeholder="Nombre del usuario">
+          </div>
+
+          <div class="campo">
+            <label>Email *</label>
+            <input type="email" id="u-email" placeholder="correo@ejemplo.com">
+          </div>
+
+          <div class="campo">
+            <label>Contraseña *</label>
+            <input type="password" id="u-password" placeholder="Mínimo 6 caracteres">
+          </div>
+
+          <div class="campo">
+            <label>Rol *</label>
+            <select id="u-rol">
+              <option value="musico">🎵 Músico</option>
+              <option value="secretario">📋 Secretario</option>
+              <option value="pastor">⛪ Pastor</option>
+              <option value="admin">⚙️ Administrador</option>
+            </select>
+          </div>
+
+        </div>
+
+        <p class="mensaje-error" id="u-error" style="display:none;">
+          ⚠️ <span id="u-error-texto">Completa todos los campos.</span>
+        </p>
+
+        <div class="botones">
+          <button class="btn-guardar" id="btn-principal" onclick="guardarUsuario()">
+            💾 Crear Usuario
+          </button>
+          <button class="btn-cancelar" id="btn-cancelar"
+            onclick="cancelarEdicion()" style="display:none;">
+            Cancelar
+          </button>
+        </div>
+
+      </div>
+
+      <!-- TABLA -->
+      <div class="tarjeta">
+        <div class="tarjeta-header">
+          <h2>⚙️ Usuarios del Sistema</h2>
+        </div>
+
+        <div class="tabla-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpo-tabla-usuarios">
+              <tr>
+                <td colspan="4" class="sin-registros">Cargando usuarios...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </main>
+
+    <script src="auth.js"></script>
+    <script src="usuarios.js"></script>
+
+  </body>
+</html>

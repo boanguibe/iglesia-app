@@ -52,6 +52,19 @@ try {
   // La columna ya existe — no hay nada que hacer
 }
 
+// ─── Migración: agregar columna rol a usuarios ────────────────────
+try {
+  db.exec("ALTER TABLE usuarios ADD COLUMN rol TEXT NOT NULL DEFAULT 'musico'")
+  console.log("✅ Migración: columna rol agregada a usuarios")
+} catch (e) {
+  // columna ya existe
+}
+
+// Actualizar el primer usuario (Boris) a admin
+db.prepare(`
+  UPDATE usuarios SET rol = 'admin' WHERE id = 1
+`).run()
+
 // ─── Funciones de la base de datos ───────────────────────────────
 function obtenerTodos() {
   return db.prepare("SELECT * FROM registros ORDER BY fecha DESC").all()
@@ -86,12 +99,12 @@ function eliminar(id) {
 }
 
 // ─── Funciones de usuarios ────────────────────────────────────────
-function crearUsuario(nombre, email, passwordHash) {
+function crearUsuario(nombre, email, passwordHash, rol = "musico") {
   const stmt = db.prepare(`
-    INSERT INTO usuarios (nombre, email, password)
-    VALUES (?, ?, ?)
+    INSERT INTO usuarios (nombre, email, password, rol)
+    VALUES (?, ?, ?, ?)
   `)
-  return stmt.run(nombre, email, passwordHash)
+  return stmt.run(nombre, email, passwordHash, rol)
 }
 
 function buscarUsuarioPorEmail(email) {
@@ -335,17 +348,36 @@ function eliminarTipoDiscipulado(id) {
   return db.prepare("DELETE FROM tipos_discipulado WHERE id = ?").run(id)
 }
 
+// ─── Funciones gestión de usuarios ───────────────────────────────
+function obtenerTodosUsuarios() {
+  return db.prepare(
+    "SELECT id, nombre, email, rol FROM usuarios ORDER BY nombre ASC"
+  ).all()
+}
+
+function actualizarUsuario(id, nombre, email, rol) {
+  return db.prepare(`
+    UPDATE usuarios SET nombre = ?, email = ?, rol = ? WHERE id = ?
+  `).run(nombre, email, rol, id)
+}
+
+function actualizarPasswordUsuario(id, hash) {
+  return db.prepare(
+    "UPDATE usuarios SET password = ? WHERE id = ?"
+  ).run(hash, id)
+}
+
+function eliminarUsuario(id) {
+  return db.prepare("DELETE FROM usuarios WHERE id = ?").run(id)
+}
 
 module.exports = {
-  // Registros de asistencia
   obtenerTodos, crear, actualizar, eliminar,
-  // Usuarios
   crearUsuario, buscarUsuarioPorEmail, contarUsuarios,
-  // Miembros
   obtenerTodosMiembros, obtenerMiembroPorId,
   crearMiembro, actualizarMiembro, eliminarMiembro,
-  // Tipos
   obtenerTiposCargo, crearTipoCargo, eliminarTipoCargo,
-  // Discipulados
-  obtenerTiposDiscipulado, crearTipoDiscipulado, eliminarTipoDiscipulado
+  obtenerTiposDiscipulado, crearTipoDiscipulado, eliminarTipoDiscipulado,
+  obtenerTodosUsuarios, actualizarUsuario,
+  actualizarPasswordUsuario, eliminarUsuario
 }

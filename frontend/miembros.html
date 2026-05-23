@@ -17,6 +17,7 @@
 
 <body>
 
+  <!-- HEADER -->
   <header>
     <div class="header-contenido">
       <div class="header-icono">✝️</div>
@@ -25,18 +26,21 @@
         <p>Iglesia del Nazareno "Los Lobos" — Talcahuano</p>
       </div>
       <div class="header-usuario">
+        <span id="rol-badge" class="rol-badge" style="display:none;"></span>
         <span id="nombre-usuario"></span>
         <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
       </div>
     </div>
   </header>
 
+  <!-- NAVEGACIÓN -->
   <nav class="navegacion">
     <div class="navegacion-inner">
-      <a href="/"                  class="nav-link">📋 Registros</a>
-      <a href="/dashboard.html"    class="nav-link">📊 Asistencia</a>
-      <a href="/miembros.html"     class="nav-link activo">👥 Miembros</a>
-      <a href="/estadisticas.html" class="nav-link">📈 Estadísticas</a>
+      <a href="/" id="nav-registros" class="nav-link">📋 Registros</a>
+      <a href="/dashboard.html" id="nav-dashboard" class="nav-link">📊 Asistencia</a>
+      <a href="/miembros.html" id="nav-miembros" class="nav-link activo">👥 Miembros</a>
+      <a href="/estadisticas.html" id="nav-estadisticas" class="nav-link">📈 Estadísticas</a>
+      <a href="/usuarios.html" id="nav-usuarios" class="nav-link">⚙️ Usuarios</a>
     </div>
   </nav>
 
@@ -157,8 +161,7 @@
         <div id="panel-cargos" class="panel-gestion" style="display:none;">
           <div class="panel-gestion-inner">
             <div style="display:flex; gap:8px; margin-bottom:12px;">
-              <input type="text" id="nuevo-cargo" placeholder="Nuevo tipo de cargo..."
-                style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
+              <input type="text" id="nuevo-cargo" placeholder="Nuevo tipo de cargo..." style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
                        border-radius:8px; font-family:'Poppins',sans-serif; font-size:13px;">
               <button class="btn-guardar" style="padding:8px 16px; font-size:13px;"
                 onclick="agregarTipoCargo()">Agregar</button>
@@ -180,8 +183,7 @@
         <div id="panel-discipulados" class="panel-gestion" style="display:none;">
           <div class="panel-gestion-inner">
             <div style="display:flex; gap:8px; margin-bottom:12px;">
-              <input type="text" id="nuevo-discipulado" placeholder="Nuevo tipo de discipulado..."
-                style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
+              <input type="text" id="nuevo-discipulado" placeholder="Nuevo tipo de discipulado..." style="flex:1; padding:8px 12px; border:1.5px solid var(--borde);
                        border-radius:8px; font-family:'Poppins',sans-serif; font-size:13px;">
               <button class="btn-guardar" style="padding:8px 16px; font-size:13px;"
                 onclick="agregarTipoDiscipulado()">Agregar</button>
@@ -199,8 +201,7 @@
         <div class="seccion-titulo" style="margin-top: 24px;">📝 Otros Datos</div>
         <div class="campo">
           <label>Notas adicionales</label>
-          <textarea id="otros_datos" rows="3"
-            style="width:100%; padding:10px; border:1.5px solid var(--borde);
+          <textarea id="otros_datos" rows="3" style="width:100%; padding:10px; border:1.5px solid var(--borde);
                    border-radius:8px; font-family:'Poppins',sans-serif;
                    font-size:14px; resize:vertical; box-sizing:border-box;"
             placeholder="Información adicional relevante..."></textarea>
@@ -214,8 +215,7 @@
           <button class="btn-guardar" id="btn-principal" onclick="guardarMiembro()">
             💾 Guardar Miembro
           </button>
-          <button class="btn-cancelar" id="btn-cancelar"
-            onclick="cancelarEdicion()" style="display:none;">
+          <button class="btn-cancelar" id="btn-cancelar" onclick="cancelarEdicion()" style="display:none;">
             Cancelar
           </button>
         </div>
@@ -228,21 +228,17 @@
       <div class="tarjeta-header tabla-header">
         <h2>👥 Lista de Miembros</h2>
         <div class="tabla-acciones">
-          <input type="text" id="filtro-miembros"
-            placeholder="🔍 Buscar miembro..."
-            oninput="filtrarMiembros()"
-            style="padding:8px 12px; border:1.5px solid var(--borde);
+          <input type="text" id="filtro-miembros" placeholder="🔍 Buscar miembro..." oninput="filtrarMiembros()" style="padding:8px 12px; border:1.5px solid var(--borde);
                    border-radius:8px; font-family:'Poppins',sans-serif;
                    font-size:13px; width:200px;">
-          <select id="filtro-estado" onchange="filtrarMiembros()"
-            style="padding:8px 12px; border:1.5px solid var(--borde);
+          <select id="filtro-estado" onchange="filtrarMiembros()" style="padding:8px 12px; border:1.5px solid var(--borde);
                    border-radius:8px; font-family:'Poppins',sans-serif;
                    font-size:13px;">
             <option value="">Todos</option>
             <option value="activo">Activos</option>
             <option value="inactivo">Inactivos</option>
           </select>
-          <button class="btn-excel"    onclick="exportarMiembrosExcel()">📥 Excel</button>
+          <button class="btn-excel" onclick="exportarMiembrosExcel()">📥 Excel</button>
           <button class="btn-imprimir" onclick="imprimirMiembros()">🖨️ Imprimir</button>
         </div>
       </div>
@@ -284,4 +280,5 @@
   <script src="miembros.js"></script>
 
 </body>
+
 </html>

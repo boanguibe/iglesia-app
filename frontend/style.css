@@ -851,3 +851,16 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   #filtro-estado { display: none !important; }
 
 }
+
+/* ─── Badge de rol ───────────────────────────────────────────────── */
+.rol-badge {
+  padding: 3px 10px;
+  background-color: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

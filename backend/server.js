@@ -120,8 +120,8 @@ app.post("/api/setup", async (req, res) => {
     return res.status(403).json({ error: "Ya existe un usuario registrado" })
   }
   const hash = await auth.hashearPassword(password)
-  db.crearUsuario(nombre, email, hash)
-  res.json({ ok: true, mensaje: "Usuario creado correctamente" })
+  db.crearUsuario(nombre, email, hash, "admin")  // ← primer usuario siempre es admin
+  res.json({ ok: true, mensaje: "Usuario admin creado correctamente" })
 })
 
 // ─── RUTAS PROTEGIDAS ─────────────────────────────────────────────
@@ -250,6 +250,80 @@ app.delete("/api/tipos-discipulado/:id", auth.requireAuth, (req, res) => {
     res.json({ ok: true })
   } catch (e) { res.status(500).json({ error: "Error al eliminar discipulado" }) }
 })
+
+// ─── GESTIÓN DE USUARIOS (solo admin) ────────────────────────────
+
+// Obtener todos los usuarios
+app.get("/api/usuarios",
+  auth.requireAuth,
+  auth.requireRol("admin"),
+  (req, res) => {
+    try {
+      res.json(db.obtenerTodosUsuarios())
+    } catch (e) {
+      res.status(500).json({ error: "Error al obtener usuarios" })
+    }
+  }
+)
+
+// Crear nuevo usuario
+app.post("/api/usuarios",
+  auth.requireAuth,
+  auth.requireRol("admin"),
+  async (req, res) => {
+    try {
+      const { nombre, email, password, rol } = req.body
+      if (!nombre || !email || !password || !rol) {
+        return res.status(400).json({ error: "Todos los campos son requeridos" })
+      }
+      const usuarioExistente = db.buscarUsuarioPorEmail(email)
+      if (usuarioExistente) {
+        return res.status(400).json({ error: "Ese email ya está registrado" })
+      }
+      const hash = await auth.hashearPassword(password)
+      db.crearUsuario(nombre, email, hash, rol)
+      res.json({ ok: true })
+    } catch (e) {
+      res.status(500).json({ error: "Error al crear usuario" })
+    }
+  }
+)
+
+// Actualizar usuario
+app.put("/api/usuarios/:id",
+  auth.requireAuth,
+  auth.requireRol("admin"),
+  async (req, res) => {
+    try {
+      const { nombre, email, rol, password } = req.body
+      db.actualizarUsuario(req.params.id, nombre, email, rol)
+      if (password) {
+        const hash = await auth.hashearPassword(password)
+        db.actualizarPasswordUsuario(req.params.id, hash)
+      }
+      res.json({ ok: true })
+    } catch (e) {
+      res.status(500).json({ error: "Error al actualizar usuario" })
+    }
+  }
+)
+
+// Eliminar usuario
+app.delete("/api/usuarios/:id",
+  auth.requireAuth,
+  auth.requireRol("admin"),
+  (req, res) => {
+    try {
+      if (Number(req.params.id) === req.usuario.id) {
+        return res.status(400).json({ error: "No puedes eliminarte a ti mismo" })
+      }
+      db.eliminarUsuario(req.params.id)
+      res.json({ ok: true })
+    } catch (e) {
+      res.status(500).json({ error: "Error al eliminar usuario" })
+    }
+  }
+)
 
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en http://localhost:${PORT}`)

@@ -28,10 +28,9 @@
         <p>Iglesia del Nazareno "Los Lobos" — Talcahuano</p>
       </div>
       <div class="header-usuario">
+        <span id="rol-badge" class="rol-badge" style="display:none;"></span>
         <span id="nombre-usuario"></span>
-        <button class="btn-cerrar-sesion" onclick="cerrarSesion()">
-          Cerrar sesión
-        </button>
+        <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
       </div>
     </div>
   </header>
@@ -39,10 +38,11 @@
   <!-- NAVEGACIÓN -->
   <nav class="navegacion">
     <div class="navegacion-inner">
-      <a href="/" class="nav-link">📋 Registros</a>
-      <a href="/dashboard.html" class="nav-link activo">📊 Asistencia</a>
-      <a href="/miembros.html" class="nav-link">👥 Miembros</a>
-      <a href="/estadisticas.html" class="nav-link">📈 Estadísticas</a>
+      <a href="/" id="nav-registros" class="nav-link">📋 Registros</a>
+      <a href="/dashboard.html" id="nav-dashboard" class="nav-link activo">📊 Asistencia</a>
+      <a href="/miembros.html" id="nav-miembros" class="nav-link">👥 Miembros</a>
+      <a href="/estadisticas.html" id="nav-estadisticas" class="nav-link">📈 Estadísticas</a>
+      <a href="/usuarios.html" id="nav-usuarios" class="nav-link">⚙️ Usuarios</a>
     </div>
   </nav>
 

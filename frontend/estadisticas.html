@@ -1,146 +1,153 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NazarApp — Estadísticas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#8B2635">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="NazarApp">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
-  <body>
 
-    <header>
-      <div class="header-contenido">
-        <div class="header-icono">✝️</div>
-        <div class="header-texto">
-          <h1>NazarApp</h1>
-          <p>Iglesia del Nazareno "Los Lobos" — Talcahuano</p>
-        </div>
-        <div class="header-usuario">
-          <span id="nombre-usuario"></span>
-          <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
-        </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NazarApp — Estadísticas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#8B2635">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="NazarApp">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-contenido">
+      <div class="header-icono">✝️</div>
+      <div class="header-texto">
+        <h1>NazarApp</h1>
+        <p>Iglesia del Nazareno "Los Lobos" — Talcahuano</p>
       </div>
-    </header>
-
-    <nav class="navegacion">
-      <div class="navegacion-inner">
-        <a href="/"                    class="nav-link">📋 Registros</a>
-        <a href="/dashboard.html"      class="nav-link">📊 Asistencia</a>
-        <a href="/miembros.html"       class="nav-link">👥 Miembros</a>
-        <a href="/estadisticas.html"   class="nav-link activo">📈 Estadísticas</a>
+      <div class="header-usuario">
+        <span id="rol-badge" class="rol-badge" style="display:none;"></span>
+        <span id="nombre-usuario"></span>
+        <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
       </div>
-    </nav>
+    </div>
+  </header>
 
-    <main>
+  <!-- NAVEGACIÓN -->
+  <nav class="navegacion">
+    <div class="navegacion-inner">
+      <a href="/" id="nav-registros" class="nav-link">📋 Registros</a>
+      <a href="/dashboard.html" id="nav-dashboard" class="nav-link">📊 Asistencia</a>
+      <a href="/miembros.html" id="nav-miembros" class="nav-link">👥 Miembros</a>
+      <a href="/estadisticas.html" id="nav-estadisticas" class="nav-link activo">📈 Estadísticas</a>
+      <a href="/usuarios.html" id="nav-usuarios" class="nav-link">⚙️ Usuarios</a>
+    </div>
+  </nav>
 
-      <!-- RESUMEN -->
-      <section class="resumen resumen-4">
-        <div class="tarjeta-resumen">
-          <span class="resumen-icono">👥</span>
-          <span class="resumen-numero" id="stat-total">0</span>
-          <span class="resumen-label">Total miembros</span>
-        </div>
-        <div class="tarjeta-resumen">
-          <span class="resumen-icono">✅</span>
-          <span class="resumen-numero" id="stat-activos">0</span>
-          <span class="resumen-label">Activos</span>
-        </div>
-        <div class="tarjeta-resumen">
-          <span class="resumen-icono">💧</span>
-          <span class="resumen-numero" id="stat-bautizados">0</span>
-          <span class="resumen-label">Bautizados</span>
-        </div>
-        <div class="tarjeta-resumen">
-          <span class="resumen-icono">📖</span>
-          <span class="resumen-numero" id="stat-discipulados">0</span>
-          <span class="resumen-label">Discipulados realizados</span>
-        </div>
-      </section>
+  <main>
 
-      <!-- FILA 1: Tipo + Estado -->
-      <div class="graficos-grid">
-
-        <div class="tarjeta grafico-card">
-          <div class="tarjeta-header">
-            <h2>👥 Tipo de Membresía</h2>
-          </div>
-          <div class="grafico-contenedor">
-            <canvas id="grafico-tipo"></canvas>
-          </div>
-        </div>
-
-        <div class="tarjeta grafico-card">
-          <div class="tarjeta-header">
-            <h2>✅ Estado de Miembros</h2>
-          </div>
-          <div class="grafico-contenedor">
-            <canvas id="grafico-estado"></canvas>
-          </div>
-        </div>
-
+    <!-- RESUMEN -->
+    <section class="resumen resumen-4">
+      <div class="tarjeta-resumen">
+        <span class="resumen-icono">👥</span>
+        <span class="resumen-numero" id="stat-total">0</span>
+        <span class="resumen-label">Total miembros</span>
       </div>
-
-      <!-- FILA 2: Bautizados + Años -->
-      <div class="graficos-grid">
-
-        <div class="tarjeta grafico-card">
-          <div class="tarjeta-header">
-            <h2>💧 Bautizados</h2>
-          </div>
-          <div class="grafico-contenedor">
-            <canvas id="grafico-bautizados"></canvas>
-          </div>
-        </div>
-
-        <div class="tarjeta grafico-card">
-          <div class="tarjeta-header">
-            <h2>📅 Años en la Iglesia</h2>
-          </div>
-          <div class="grafico-contenedor">
-            <canvas id="grafico-anios"></canvas>
-          </div>
-        </div>
-
+      <div class="tarjeta-resumen">
+        <span class="resumen-icono">✅</span>
+        <span class="resumen-numero" id="stat-activos">0</span>
+        <span class="resumen-label">Activos</span>
       </div>
+      <div class="tarjeta-resumen">
+        <span class="resumen-icono">💧</span>
+        <span class="resumen-numero" id="stat-bautizados">0</span>
+        <span class="resumen-label">Bautizados</span>
+      </div>
+      <div class="tarjeta-resumen">
+        <span class="resumen-icono">📖</span>
+        <span class="resumen-numero" id="stat-discipulados">0</span>
+        <span class="resumen-label">Discipulados realizados</span>
+      </div>
+    </section>
 
-      <!-- FILA 3: Cargos (ancho completo) -->
+    <!-- FILA 1: Tipo + Estado -->
+    <div class="graficos-grid">
+
       <div class="tarjeta grafico-card">
         <div class="tarjeta-header">
-          <h2>🎖️ Miembros por Cargo</h2>
+          <h2>👥 Tipo de Membresía</h2>
         </div>
         <div class="grafico-contenedor">
-          <canvas id="grafico-cargos"></canvas>
+          <canvas id="grafico-tipo"></canvas>
         </div>
       </div>
 
-      <!-- FILA 4: Discipulados (ancho completo) -->
       <div class="tarjeta grafico-card">
         <div class="tarjeta-header">
-          <h2>📖 Discipulados más realizados</h2>
+          <h2>✅ Estado de Miembros</h2>
         </div>
         <div class="grafico-contenedor">
-          <canvas id="grafico-discipulados"></canvas>
+          <canvas id="grafico-estado"></canvas>
         </div>
       </div>
 
-    </main>
+    </div>
 
-    <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker.register("/sw.js")
-        })
-      }
-    </script>
-    <script src="auth.js"></script>
-    <script src="estadisticas.js"></script>
+    <!-- FILA 2: Bautizados + Años -->
+    <div class="graficos-grid">
 
-  </body>
+      <div class="tarjeta grafico-card">
+        <div class="tarjeta-header">
+          <h2>💧 Bautizados</h2>
+        </div>
+        <div class="grafico-contenedor">
+          <canvas id="grafico-bautizados"></canvas>
+        </div>
+      </div>
+
+      <div class="tarjeta grafico-card">
+        <div class="tarjeta-header">
+          <h2>📅 Años en la Iglesia</h2>
+        </div>
+        <div class="grafico-contenedor">
+          <canvas id="grafico-anios"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FILA 3: Cargos (ancho completo) -->
+    <div class="tarjeta grafico-card">
+      <div class="tarjeta-header">
+        <h2>🎖️ Miembros por Cargo</h2>
+      </div>
+      <div class="grafico-contenedor">
+        <canvas id="grafico-cargos"></canvas>
+      </div>
+    </div>
+
+    <!-- FILA 4: Discipulados (ancho completo) -->
+    <div class="tarjeta grafico-card">
+      <div class="tarjeta-header">
+        <h2>📖 Discipulados más realizados</h2>
+      </div>
+      <div class="grafico-contenedor">
+        <canvas id="grafico-discipulados"></canvas>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js")
+      })
+    }
+  </script>
+  <script src="auth.js"></script>
+  <script src="estadisticas.js"></script>
+
+</body>
+
 </html>
