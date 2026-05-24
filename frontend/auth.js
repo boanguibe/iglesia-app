@@ -2,69 +2,36 @@
 function guardarToken(token, nombre, rol) {
   localStorage.setItem("token",   token)
   localStorage.setItem("usuario", nombre)
-  localStorage.setItem("rol",     rol)
+  localStorage.setItem("rol",     rol || "admin")
 }
 
 function obtenerToken()  { return localStorage.getItem("token") }
-function obtenerRol()    { return localStorage.getItem("rol") }
+function obtenerRol()    { return localStorage.getItem("rol") || "admin" }
 function obtenerNombre() { return localStorage.getItem("usuario") }
 
 function cerrarSesion() {
-  localStorage.removeItem("token")
-  localStorage.removeItem("usuario")
-  localStorage.removeItem("rol")
+  localStorage.clear()
   window.location.href = "/login.html"
 }
 
-// ─── Proteger páginas ─────────────────────────────────────────────
-const PERMISOS = {
-  "/":                 ["admin", "pastor", "secretario", "musico"],
-  "/index.html":       ["admin", "pastor", "secretario", "musico"],
-  "/dashboard.html":   ["admin", "pastor"],
-  "/miembros.html":    ["admin", "pastor", "secretario"],
-  "/estadisticas.html":["admin", "pastor"],
-  "/usuarios.html":    ["admin"]
-}
-
+// ─── Proteger páginas — solo verifica que haya sesión ────────────
 function requireLogin() {
   const token = obtenerToken()
-
-  // Sin token → ir al login
   if (!token) {
     window.location.href = "/login.html"
     return false
   }
-
-  // Token sin rol → forzar nuevo login
-  const rol = obtenerRol()
-  if (!rol) {
-    cerrarSesion()   // limpia localStorage y redirige al login
-    return false
-  }
-
-  // Verificar permiso para esta página
-  const pagina     = window.location.pathname
-  const permitidos = PERMISOS[pagina] || ["admin"]
-
-  if (!permitidos.includes(rol)) {
-    // No tiene permiso → ir al inicio, no crear loop
-    if (pagina !== "/" && pagina !== "/index.html") {
-      window.location.href = "/"
-    }
-    return false
-  }
-
   return true
 }
 
-// ─── Mostrar nombre y ocultar nav según rol ───────────────────────
+// ─── Mostrar nombre y rol en el header ───────────────────────────
 function mostrarUsuario() {
   const nombre = obtenerNombre()
   const rol    = obtenerRol()
-  const el     = document.getElementById("nombre-usuario")
-  if (el && nombre) el.textContent = nombre
 
-  // Mostrar badge de rol
+  const elNombre = document.getElementById("nombre-usuario")
+  if (elNombre && nombre) elNombre.textContent = nombre
+
   const badge = document.getElementById("rol-badge")
   if (badge) {
     const labels = {
@@ -73,24 +40,25 @@ function mostrarUsuario() {
       secretario: "Secretario",
       musico:     "Músico"
     }
-    badge.textContent = labels[rol] || rol
+    badge.textContent  = labels[rol] || rol
     badge.style.display = "inline"
   }
 
-  // Ocultar links de nav según rol
+  // Ocultar links según rol
   ocultarNavSegunRol(rol)
 }
 
+// ─── Ocultar nav según rol ────────────────────────────────────────
 function ocultarNavSegunRol(rol) {
   const restricciones = {
-    dashboard:    ["admin", "pastor"],
-    miembros:     ["admin", "pastor", "secretario"],
-    estadisticas: ["admin", "pastor"],
-    usuarios:     ["admin"]
+    "nav-dashboard":    ["admin", "pastor"],
+    "nav-miembros":     ["admin", "pastor", "secretario"],
+    "nav-estadisticas": ["admin", "pastor"],
+    "nav-usuarios":     ["admin"]
   }
 
-  Object.entries(restricciones).forEach(([pagina, rolesPermitidos]) => {
-    const link = document.getElementById(`nav-${pagina}`)
+  Object.entries(restricciones).forEach(([id, rolesPermitidos]) => {
+    const link = document.getElementById(id)
     if (link) {
       link.style.display = rolesPermitidos.includes(rol) ? "" : "none"
     }
@@ -160,4 +128,14 @@ async function iniciarSesion() {
     btnLogin.textContent = "Entrar"
     btnLogin.disabled    = false
   }
+}
+
+// ─── Obtener id del usuario desde token ───────────────────────────
+function obtenerIdUsuario() {
+  const token = obtenerToken()
+  if (!token) return null
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]))
+    return payload.id
+  } catch { return null }
 }
