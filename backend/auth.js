@@ -14,10 +14,11 @@ async function verificarPassword(password, hash) {
 function generarToken(usuario) {
   return jwt.sign(
     {
-      id:     usuario.id,
-      email:  usuario.email,
-      nombre: usuario.nombre,
-      rol:    usuario.rol        // ← incluimos el rol en el token
+      id:       usuario.id,
+      email:    usuario.email,
+      nombre:   usuario.nombre,
+      rol:      usuario.rol,
+      permisos: usuario.permisos || []
     },
     SECRET,
     { expiresIn: "8h" }

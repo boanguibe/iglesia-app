@@ -1,30 +1,72 @@
 // ─── Token y sesión ───────────────────────────────────────────────
-function guardarToken(token, nombre, rol) {
-  localStorage.setItem("token",   token)
-  localStorage.setItem("usuario", nombre)
-  localStorage.setItem("rol",     rol || "admin")
+function guardarToken(token, nombre, rol, permisos) {
+  localStorage.setItem("token",    token)
+  localStorage.setItem("usuario",  nombre)
+  localStorage.setItem("rol",      rol || "musico")
+  localStorage.setItem("permisos", JSON.stringify(permisos || []))
 }
 
-function obtenerToken()  { return localStorage.getItem("token") }
-function obtenerRol()    { return localStorage.getItem("rol") || "admin" }
-function obtenerNombre() { return localStorage.getItem("usuario") }
+function obtenerToken()   { return localStorage.getItem("token") }
+function obtenerRol()     { return localStorage.getItem("rol") || "musico" }
+function obtenerNombre()  { return localStorage.getItem("usuario") }
+function obtenerPermisos() {
+  try {
+    return JSON.parse(localStorage.getItem("permisos") || "[]")
+  } catch { return [] }
+}
+
+function tienePermiso(pagina) {
+  const rol = obtenerRol()
+  if (rol === "admin") return true   // admin siempre tiene acceso
+  return obtenerPermisos().includes(pagina)
+}
 
 function cerrarSesion() {
   localStorage.clear()
   window.location.href = "/login.html"
 }
 
-// ─── Proteger páginas — solo verifica que haya sesión ────────────
+// ─── Mapa página → permiso ────────────────────────────────────────
+const MAPA_PERMISOS = {
+  "/":                  "registros",
+  "/index.html":        "registros",
+  "/dashboard.html":    "dashboard",
+  "/miembros.html":     "miembros",
+  "/estadisticas.html": "estadisticas",
+  "/usuarios.html":     "usuarios"
+}
+
+// ─── Proteger páginas ─────────────────────────────────────────────
 function requireLogin() {
   const token = obtenerToken()
   if (!token) {
     window.location.href = "/login.html"
     return false
   }
+
+  const pagina  = window.location.pathname
+  const permiso = MAPA_PERMISOS[pagina]
+
+  // Si la página requiere un permiso y no lo tiene
+  if (permiso && !tienePermiso(permiso)) {
+    // Buscar primera página con permiso
+    const permisos = obtenerPermisos()
+    const rol      = obtenerRol()
+
+    if (rol === "admin" || permisos.includes("registros")) {
+      if (pagina !== "/" && pagina !== "/index.html") {
+        window.location.href = "/"
+      }
+    } else {
+      cerrarSesion()
+    }
+    return false
+  }
+
   return true
 }
 
-// ─── Mostrar nombre y rol en el header ───────────────────────────
+// ─── Mostrar usuario y ocultar nav según permisos ─────────────────
 function mostrarUsuario() {
   const nombre = obtenerNombre()
   const rol    = obtenerRol()
@@ -40,27 +82,23 @@ function mostrarUsuario() {
       secretario: "Secretario",
       musico:     "Músico"
     }
-    badge.textContent  = labels[rol] || rol
+    badge.textContent   = labels[rol] || rol
     badge.style.display = "inline"
   }
 
-  // Ocultar links según rol
-  ocultarNavSegunRol(rol)
-}
-
-// ─── Ocultar nav según rol ────────────────────────────────────────
-function ocultarNavSegunRol(rol) {
-  const restricciones = {
-    "nav-dashboard":    ["admin", "pastor"],
-    "nav-miembros":     ["admin", "pastor", "secretario"],
-    "nav-estadisticas": ["admin", "pastor"],
-    "nav-usuarios":     ["admin"]
+  // Mostrar/ocultar links según permisos
+  const mapaNav = {
+    "nav-registros":    "registros",
+    "nav-dashboard":    "dashboard",
+    "nav-miembros":     "miembros",
+    "nav-estadisticas": "estadisticas",
+    "nav-usuarios":     "usuarios"
   }
 
-  Object.entries(restricciones).forEach(([id, rolesPermitidos]) => {
+  Object.entries(mapaNav).forEach(([id, permiso]) => {
     const link = document.getElementById(id)
     if (link) {
-      link.style.display = rolesPermitidos.includes(rol) ? "" : "none"
+      link.style.display = tienePermiso(permiso) ? "" : "none"
     }
   })
 }
@@ -120,7 +158,7 @@ async function iniciarSesion() {
       return
     }
 
-    guardarToken(datos.token, datos.nombre, datos.rol)
+    guardarToken(datos.token, datos.nombre, datos.rol, datos.permisos)
     window.location.href = "/"
 
   } catch (error) {
@@ -130,12 +168,11 @@ async function iniciarSesion() {
   }
 }
 
-// ─── Obtener id del usuario desde token ───────────────────────────
+// ─── Obtener id del usuario desde el token ────────────────────────
 function obtenerIdUsuario() {
   const token = obtenerToken()
   if (!token) return null
   try {
-    const payload = JSON.parse(atob(token.split(".")[1]))
-    return payload.id
+    return JSON.parse(atob(token.split(".")[1])).id
   } catch { return null }
 }

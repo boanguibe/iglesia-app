@@ -60,6 +60,21 @@ try {
   // columna ya existe
 }
 
+// ─── Migración: agregar columna permisos ──────────────────────────
+try {
+  db.exec("ALTER TABLE usuarios ADD COLUMN permisos TEXT DEFAULT '[]'")
+  console.log("✅ Migración: columna permisos agregada")
+} catch (e) {
+  // ya existe
+}
+
+// Admin tiene todos los permisos por defecto
+db.prepare(`
+  UPDATE usuarios
+  SET permisos = '["registros","dashboard","miembros","estadisticas","usuarios"]'
+  WHERE rol = 'admin' AND (permisos = '[]' OR permisos IS NULL)
+`).run()
+
 // Actualizar el primer usuario (Boris) a admin
 db.prepare(`
   UPDATE usuarios SET rol = 'admin' WHERE id = 1
@@ -99,12 +114,12 @@ function eliminar(id) {
 }
 
 // ─── Funciones de usuarios ────────────────────────────────────────
-function crearUsuario(nombre, email, passwordHash, rol = "musico") {
+function crearUsuario(nombre, email, passwordHash, rol = "musico", permisos = []) {
   const stmt = db.prepare(`
-    INSERT INTO usuarios (nombre, email, password, rol)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO usuarios (nombre, email, password, rol, permisos)
+    VALUES (?, ?, ?, ?, ?)
   `)
-  return stmt.run(nombre, email, passwordHash, rol)
+  return stmt.run(nombre, email, passwordHash, rol, JSON.stringify(permisos))
 }
 
 function buscarUsuarioPorEmail(email) {
@@ -350,15 +365,21 @@ function eliminarTipoDiscipulado(id) {
 
 // ─── Funciones gestión de usuarios ───────────────────────────────
 function obtenerTodosUsuarios() {
-  return db.prepare(
-    "SELECT id, nombre, email, rol FROM usuarios ORDER BY nombre ASC"
+  const usuarios = db.prepare(
+    "SELECT id, nombre, email, rol, permisos FROM usuarios ORDER BY nombre ASC"
   ).all()
+  return usuarios.map(u => ({
+    ...u,
+    permisos: JSON.parse(u.permisos || "[]")
+  }))
 }
 
-function actualizarUsuario(id, nombre, email, rol) {
+function actualizarUsuario(id, nombre, email, rol, permisos = []) {
   return db.prepare(`
-    UPDATE usuarios SET nombre = ?, email = ?, rol = ? WHERE id = ?
-  `).run(nombre, email, rol, id)
+    UPDATE usuarios
+    SET nombre = ?, email = ?, rol = ?, permisos = ?
+    WHERE id = ?
+  `).run(nombre, email, rol, JSON.stringify(permisos), id)
 }
 
 function actualizarPasswordUsuario(id, hash) {

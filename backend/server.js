@@ -102,16 +102,31 @@ app.post("/api/login", async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({ error: "Email y contraseña requeridos" })
   }
+
   const usuario = db.buscarUsuarioPorEmail(email)
   if (!usuario) {
     return res.status(401).json({ error: "Credenciales incorrectas" })
   }
+
   const passwordCorrecta = await auth.verificarPassword(password, usuario.password)
   if (!passwordCorrecta) {
     return res.status(401).json({ error: "Credenciales incorrectas" })
   }
-  const token = auth.generarToken(usuario)
-  res.json({ token, nombre: usuario.nombre })
+
+  // Parsear permisos
+  const permisos = JSON.parse(usuario.permisos || "[]")
+
+  const token = auth.generarToken({
+    ...usuario,
+    permisos
+  })
+
+  res.json({
+    token,
+    nombre:   usuario.nombre,
+    rol:      usuario.rol,
+    permisos
+  })
 })
 
 app.post("/api/setup", async (req, res) => {
@@ -272,16 +287,16 @@ app.post("/api/usuarios",
   auth.requireRol("admin"),
   async (req, res) => {
     try {
-      const { nombre, email, password, rol } = req.body
+      const { nombre, email, password, rol, permisos } = req.body
       if (!nombre || !email || !password || !rol) {
         return res.status(400).json({ error: "Todos los campos son requeridos" })
       }
-      const usuarioExistente = db.buscarUsuarioPorEmail(email)
-      if (usuarioExistente) {
+      const existe = db.buscarUsuarioPorEmail(email)
+      if (existe) {
         return res.status(400).json({ error: "Ese email ya está registrado" })
       }
       const hash = await auth.hashearPassword(password)
-      db.crearUsuario(nombre, email, hash, rol)
+      db.crearUsuario(nombre, email, hash, rol, permisos || [])
       res.json({ ok: true })
     } catch (e) {
       res.status(500).json({ error: "Error al crear usuario" })
@@ -295,8 +310,8 @@ app.put("/api/usuarios/:id",
   auth.requireRol("admin"),
   async (req, res) => {
     try {
-      const { nombre, email, rol, password } = req.body
-      db.actualizarUsuario(req.params.id, nombre, email, rol)
+      const { nombre, email, rol, password, permisos } = req.body
+      db.actualizarUsuario(req.params.id, nombre, email, rol, permisos || [])
       if (password) {
         const hash = await auth.hashearPassword(password)
         db.actualizarPasswordUsuario(req.params.id, hash)

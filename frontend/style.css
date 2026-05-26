@@ -864,3 +864,15 @@ tr.editando-fila td { background-color: #fef9c3 !important; }
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+
+/* ─── Grid de permisos ───────────────────────────────────────────── */
+.permisos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 8px;
+}
+
+@media (max-width: 480px) {
+  .permisos-grid { grid-template-columns: 1fr; }
+}
