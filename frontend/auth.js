@@ -17,13 +17,32 @@ function obtenerPermisos() {
 
 function tienePermiso(pagina) {
   const rol = obtenerRol()
-  if (rol === "admin") return true   // admin siempre tiene acceso
+  if (rol === "admin") return true
   return obtenerPermisos().includes(pagina)
 }
 
 function cerrarSesion() {
   localStorage.clear()
   window.location.href = "/login.html"
+}
+
+// ─── Primera ruta accesible según permisos ────────────────────────
+function obtenerPrimeraRuta() {
+  const rol      = obtenerRol()
+  if (rol === "admin") return "/"
+
+  const orden = [
+    { permiso: "registros",    ruta: "/" },
+    { permiso: "miembros",     ruta: "/miembros.html" },
+    { permiso: "dashboard",    ruta: "/dashboard.html" },
+    { permiso: "estadisticas", ruta: "/estadisticas.html" }
+  ]
+
+  for (const item of orden) {
+    if (tienePermiso(item.permiso)) return item.ruta
+  }
+
+  return null  // sin ningún permiso
 }
 
 // ─── Mapa página → permiso ────────────────────────────────────────
@@ -47,17 +66,15 @@ function requireLogin() {
   const pagina  = window.location.pathname
   const permiso = MAPA_PERMISOS[pagina]
 
-  // Si la página requiere un permiso y no lo tiene
   if (permiso && !tienePermiso(permiso)) {
-    // Buscar primera página con permiso
-    const permisos = obtenerPermisos()
-    const rol      = obtenerRol()
+    // No tiene permiso para esta página
+    // Buscar la primera página a la que sí tiene acceso
+    const primeraRuta = obtenerPrimeraRuta()
 
-    if (rol === "admin" || permisos.includes("registros")) {
-      if (pagina !== "/" && pagina !== "/index.html") {
-        window.location.href = "/"
-      }
-    } else {
+    if (primeraRuta && pagina !== primeraRuta) {
+      window.location.href = primeraRuta
+    } else if (!primeraRuta) {
+      // No tiene ningún permiso → logout
       cerrarSesion()
     }
     return false
@@ -66,7 +83,7 @@ function requireLogin() {
   return true
 }
 
-// ─── Mostrar usuario y ocultar nav según permisos ─────────────────
+// ─── Mostrar usuario y nav según permisos ─────────────────────────
 function mostrarUsuario() {
   const nombre = obtenerNombre()
   const rol    = obtenerRol()
@@ -86,7 +103,6 @@ function mostrarUsuario() {
     badge.style.display = "inline"
   }
 
-  // Mostrar/ocultar links según permisos
   const mapaNav = {
     "nav-registros":    "registros",
     "nav-dashboard":    "dashboard",
@@ -159,7 +175,10 @@ async function iniciarSesion() {
     }
 
     guardarToken(datos.token, datos.nombre, datos.rol, datos.permisos)
-    window.location.href = "/"
+
+    // Redirigir a la primera página con permiso
+    const primeraRuta = obtenerPrimeraRuta()
+    window.location.href = primeraRuta || "/login.html"
 
   } catch (error) {
     console.error("Error en login:", error)
@@ -168,7 +187,7 @@ async function iniciarSesion() {
   }
 }
 
-// ─── Obtener id del usuario desde el token ────────────────────────
+// ─── Obtener id del token ─────────────────────────────────────────
 function obtenerIdUsuario() {
   const token = obtenerToken()
   if (!token) return null
