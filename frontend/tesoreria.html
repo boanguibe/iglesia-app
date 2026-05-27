@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NazarApp — Tesorería</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#8B2635">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="NazarApp">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+  <header>
+    <div class="header-contenido">
+      <div class="header-icono">✝️</div>
+      <div class="header-texto">
+        <h1>NazarApp</h1>
+        <p>Iglesia del Nazareno "Los Lobos" — Talcahuano</p>
+      </div>
+      <div class="header-usuario">
+        <span id="rol-badge" class="rol-badge" style="display:none;"></span>
+        <span id="nombre-usuario"></span>
+        <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="navegacion">
+    <div class="navegacion-inner">
+      <a href="/"                  id="nav-registros"    class="nav-link">📋 Registros</a>
+      <a href="/dashboard.html"    id="nav-dashboard"    class="nav-link">📊 Asistencia</a>
+      <a href="/miembros.html"     id="nav-miembros"     class="nav-link">👥 Miembros</a>
+      <a href="/estadisticas.html" id="nav-estadisticas" class="nav-link">📈 Estadísticas</a>
+      <a href="/tesoreria.html"    id="nav-tesoreria"    class="nav-link activo">💰 Tesorería</a>
+      <a href="/usuarios.html"     id="nav-usuarios"     class="nav-link">⚙️ Usuarios</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="tarjeta">
+
+      <!-- PESTAÑAS -->
+      <div class="tabs-nav">
+        <button class="tab-btn activo" onclick="mostrarTab('movimientos')">
+          📒 Movimientos
+        </button>
+        <button class="tab-btn" onclick="mostrarTab('saldos')">
+          💳 Saldos
+        </button>
+        <button class="tab-btn" onclick="mostrarTab('aportes')">
+          📋 Aportes Distrito
+        </button>
+        <button class="tab-btn" onclick="mostrarTab('configuracion')">
+          ⚙️ Configuración
+        </button>
+      </div>
+
+      <!-- ═══════════ TAB: MOVIMIENTOS ═══════════ -->
+      <div id="tab-movimientos" class="tab-content activo">
+
+        <!-- Selector de período -->
+        <div class="periodo-selector">
+          <label>Período:</label>
+          <select id="mov-mes" onchange="cargarMovimientos()"></select>
+          <select id="mov-anio" onchange="cargarMovimientos()"></select>
+          <label style="margin-left:12px;">Entidad:</label>
+          <select id="mov-filtro-entidad" onchange="cargarMovimientos()">
+            <option value="">Todas</option>
+          </select>
+          <label style="margin-left:12px;">Tipo:</label>
+          <select id="mov-filtro-tipo" onchange="cargarMovimientos()">
+            <option value="">Todos</option>
+            <option value="ingreso">Ingresos</option>
+            <option value="egreso">Egresos</option>
+          </select>
+        </div>
+
+        <!-- Resumen del período -->
+        <div class="resumen-tesoro">
+          <div class="tarjeta-tesoro ingreso">
+            <span class="tt-label">💚 Total Ingresos</span>
+            <span class="tt-monto" id="resumen-ingresos">$0</span>
+          </div>
+          <div class="tarjeta-tesoro egreso">
+            <span class="tt-label">❤️ Total Egresos</span>
+            <span class="tt-monto" id="resumen-egresos">$0</span>
+          </div>
+          <div class="tarjeta-tesoro saldo">
+            <span class="tt-label">💜 Diferencia del Período</span>
+            <span class="tt-monto" id="resumen-diferencia">$0</span>
+          </div>
+        </div>
+
+        <!-- Formulario nuevo movimiento -->
+        <div class="form-movimiento">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h3 style="font-size:14px; font-weight:600; color:var(--texto);" id="titulo-mov-form">
+              ➕ Nuevo Movimiento
+            </h3>
+            <button class="btn-cancelar" id="btn-cancelar-mov"
+              onclick="cancelarMovimiento()" style="display:none; flex:none; width:auto; padding:6px 14px;">
+              Cancelar
+            </button>
+          </div>
+
+          <div class="formulario-grid">
+
+            <div class="campo">
+              <label>Fecha *</label>
+              <input type="date" id="mov-fecha">
+            </div>
+
+            <div class="campo">
+              <label>Tipo *</label>
+              <select id="mov-tipo" onchange="actualizarConceptos(); actualizarEntidades()">
+                <option value="ingreso">💚 Ingreso</option>
+                <option value="egreso">❤️ Egreso</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label>Entidad</label>
+              <select id="mov-entidad"></select>
+            </div>
+
+            <div class="campo">
+              <label>Concepto *</label>
+              <select id="mov-concepto"></select>
+            </div>
+
+            <div class="campo">
+              <label>Cuenta *</label>
+              <select id="mov-cuenta"></select>
+            </div>
+
+            <div class="campo">
+              <label>Monto *</label>
+              <input type="number" id="mov-monto" min="0" placeholder="0">
+            </div>
+
+            <div class="campo" style="grid-column: 1 / -1;">
+              <label>Referencia (¿quién pagó / a quién se pagó?)</label>
+              <input type="text" id="mov-referencia"
+                placeholder="Ej: Pastor Boris, Anónimo, Hno. Jaime...">
+            </div>
+
+            <div class="campo" style="grid-column: 1 / -1;">
+              <label>Observación</label>
+              <input type="text" id="mov-observacion"
+                placeholder="Detalle adicional opcional...">
+            </div>
+
+          </div>
+
+          <p class="mensaje-error" id="mov-error" style="display:none; margin-top:10px;">
+            ⚠️ Fecha, concepto, cuenta y monto son obligatorios.
+          </p>
+
+          <button class="btn-guardar" id="btn-guardar-mov"
+            onclick="guardarMovimiento()"
+            style="margin-top:16px; max-width:220px;">
+            💾 Guardar Movimiento
+          </button>
+        </div>
+
+        <!-- Tabla de movimientos -->
+        <div style="padding: 0 0 8px;">
+          <div class="tarjeta-header tabla-header" style="padding: 16px 24px;">
+            <h2>📒 Movimientos del Período</h2>
+            <div class="tabla-acciones">
+              <button class="btn-excel" onclick="exportarMovimientosExcel()">
+                📥 Exportar Excel
+              </button>
+              <button class="btn-imprimir" onclick="imprimirMovimientos()">
+                🖨️ Imprimir
+              </button>
+            </div>
+          </div>
+
+          <div class="tabla-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Tipo</th>
+                  <th>Concepto</th>
+                  <th>Entidad</th>
+                  <th>Cuenta</th>
+                  <th>Monto</th>
+                  <th>Referencia</th>
+                  <th>Observación</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-movimientos">
+                <tr>
+                  <td colspan="9" class="sin-registros">
+                    Selecciona un período para ver los movimientos.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+      <!-- FIN TAB MOVIMIENTOS -->
+
+      <!-- ═══════════ TAB: SALDOS ═══════════ -->
+      <div id="tab-saldos" class="tab-content">
+
+        <div class="periodo-selector">
+          <label>Período:</label>
+          <select id="sal-mes" onchange="cargarSaldos()"></select>
+          <select id="sal-anio" onchange="cargarSaldos()"></select>
+          <button class="btn-guardar"
+            onclick="abrirModalSaldoInicial()"
+            style="margin-left:12px; padding:6px 16px; font-size:13px; flex:none; width:auto;">
+            ✏️ Editar Saldos Iniciales
+          </button>
+        </div>
+
+        <div style="padding: 20px 24px;" id="contenido-saldos">
+          <p style="color:var(--texto-suave); font-size:14px; text-align:center; padding:40px;">
+            Selecciona un período para ver los saldos.
+          </p>
+        </div>
+
+        <!-- Saldo consolidado total -->
+        <div style="padding: 0 24px 24px;" id="saldo-consolidado" style="display:none;">
+        </div>
+
+      </div>
+      <!-- FIN TAB SALDOS -->
+
+      <!-- ═══════════ TAB: APORTES ═══════════ -->
+      <div id="tab-aportes" class="tab-content">
+
+        <div class="periodo-selector">
+          <label>Período:</label>
+          <select id="apo-mes" onchange="cargarAportes()"></select>
+          <select id="apo-anio" onchange="cargarAportes()"></select>
+          <button class="btn-guardar"
+            onclick="calcularAportes()"
+            style="margin-left:12px; padding:6px 16px; font-size:13px; flex:none; width:auto;">
+            🔄 Recalcular
+          </button>
+        </div>
+
+        <div style="padding: 20px 24px;" id="contenido-aportes">
+          <p style="color:var(--texto-suave); font-size:14px; text-align:center; padding:40px;">
+            Selecciona un período para calcular los aportes.
+          </p>
+        </div>
+
+      </div>
+      <!-- FIN TAB APORTES -->
+
+      <!-- ═══════════ TAB: CONFIGURACIÓN ═══════════ -->
+      <div id="tab-configuracion" class="tab-content">
+
+        <!-- FEM Anual -->
+        <div class="config-seccion">
+          <h3>🌍 Fondo Evangelístico Mundial (FEM)</h3>
+          <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+            <div class="campo">
+              <label>Monto anual FEM ($)</label>
+              <input type="number" id="config-fem" placeholder="0" style="width:200px;">
+            </div>
+            <div class="campo">
+              <label>Año eclesiástico</label>
+              <input type="number" id="config-anio-ecl" placeholder="2025" style="width:140px;">
+            </div>
+            <button class="btn-guardar"
+              onclick="guardarConfig()"
+              style="padding:10px 20px; flex:none; width:auto; margin-bottom:6px;">
+              💾 Guardar
+            </button>
+          </div>
+          <p id="fem-mensual-info" style="font-size:13px; color:var(--texto-suave); margin-top:8px;"></p>
+        </div>
+
+        <!-- Entidades -->
+        <div class="config-seccion">
+          <h3>🏛️ Entidades y Porcentajes Distritales</h3>
+          <div id="lista-entidades"></div>
+        </div>
+
+        <!-- Cuentas -->
+        <div class="config-seccion">
+          <h3>💳 Cuentas (Efectivo y Banco)</h3>
+          <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+            <input type="text" id="nueva-cuenta-nombre"
+              placeholder="Nombre de la cuenta"
+              style="flex:1; min-width:180px; padding:8px 12px;
+                     border:1.5px solid var(--borde); border-radius:8px;
+                     font-family:'Poppins',sans-serif; font-size:13px;">
+            <select id="nueva-cuenta-tipo"
+              style="padding:8px 12px; border:1.5px solid var(--borde);
+                     border-radius:8px; font-family:'Poppins',sans-serif; font-size:13px;">
+              <option value="efectivo">Efectivo</option>
+              <option value="banco">Banco</option>
+            </select>
+            <button class="btn-guardar"
+              onclick="agregarCuenta()"
+              style="padding:8px 16px; flex:none; width:auto;">
+              ➕ Agregar
+            </button>
+          </div>
+          <div id="lista-cuentas"></div>
+        </div>
+
+        <!-- Conceptos Ingreso -->
+        <div class="config-seccion">
+          <h3>💚 Conceptos de Ingreso</h3>
+          <div style="display:grid; grid-template-columns:2fr 1fr 1fr auto; gap:8px; margin-bottom:12px; align-items:flex-end;">
+            <div class="campo">
+              <label>Nombre</label>
+              <input type="text" id="nuevo-ci-nombre" placeholder="Nombre del concepto">
+            </div>
+            <div class="campo">
+              <label>Entidad</label>
+              <select id="nuevo-ci-entidad"></select>
+            </div>
+            <div class="campo">
+              <label>% Distrito</label>
+              <input type="number" id="nuevo-ci-porcentaje"
+                placeholder="0" min="0" max="100">
+            </div>
+            <button class="btn-guardar"
+              onclick="agregarConcepto('ingreso')"
+              style="padding:10px 16px; flex:none; width:auto; margin-bottom:6px;">
+              ➕
+            </button>
+          </div>
+          <div id="lista-conceptos-ingreso"></div>
+        </div>
+
+        <!-- Conceptos Egreso -->
+        <div class="config-seccion">
+          <h3>❤️ Conceptos de Egreso</h3>
+          <div style="display:flex; gap:8px; margin-bottom:12px; align-items:flex-end; flex-wrap:wrap;">
+            <div class="campo" style="flex:1; min-width:200px;">
+              <label>Nombre del concepto</label>
+              <input type="text" id="nuevo-ce-nombre" placeholder="Ej: Gastos Locales">
+            </div>
+            <button class="btn-guardar"
+              onclick="agregarConcepto('egreso')"
+              style="padding:10px 16px; flex:none; width:auto; margin-bottom:6px;">
+              ➕ Agregar
+            </button>
+          </div>
+          <div id="lista-conceptos-egreso"></div>
+        </div>
+
+      </div>
+      <!-- FIN TAB CONFIGURACIÓN -->
+
+    </div>
+  </main>
+
+  <!-- Modal saldo inicial -->
+  <div id="modal-saldo" style="display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:white; border-radius:14px; padding:28px;
+      max-width:500px; width:90%; max-height:80vh; overflow-y:auto;">
+      <h3 style="font-size:16px; font-weight:600; margin-bottom:16px; color:var(--texto);">
+        ✏️ Saldos Iniciales del Período
+      </h3>
+      <div id="modal-saldo-contenido"></div>
+      <div style="display:flex; gap:10px; margin-top:20px;">
+        <button class="btn-guardar" onclick="guardarSaldosIniciales()">
+          💾 Guardar
+        </button>
+        <button class="btn-cancelar" onclick="cerrarModalSaldo()"
+          style="display:flex; flex:1;">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js")
+      })
+    }
+  </script>
+  <script src="auth.js"></script>
+  <script src="tesoreria.js"></script>
+
+</body>
+</html>

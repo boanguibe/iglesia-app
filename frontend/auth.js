@@ -35,7 +35,9 @@ function obtenerPrimeraRuta() {
     { permiso: "registros",    ruta: "/" },
     { permiso: "miembros",     ruta: "/miembros.html" },
     { permiso: "dashboard",    ruta: "/dashboard.html" },
-    { permiso: "estadisticas", ruta: "/estadisticas.html" }
+    { permiso: "estadisticas", ruta: "/estadisticas.html" },
+    { permiso: "tesoreria",    ruta: "/tesoreria.html" },
+    { permiso: "usuarios",     ruta: "/usuarios.html" }
   ]
 
   for (const item of orden) {
@@ -52,6 +54,7 @@ const MAPA_PERMISOS = {
   "/dashboard.html":    "dashboard",
   "/miembros.html":     "miembros",
   "/estadisticas.html": "estadisticas",
+  "/tesoreria.html":    "tesoreria", // ← nuevo
   "/usuarios.html":     "usuarios"
 }
 
@@ -108,6 +111,7 @@ function mostrarUsuario() {
     "nav-dashboard":    "dashboard",
     "nav-miembros":     "miembros",
     "nav-estadisticas": "estadisticas",
+    "nav-tesoreria":    "tesoreria",
     "nav-usuarios":     "usuarios"
   }
 
