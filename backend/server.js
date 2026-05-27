@@ -340,6 +340,192 @@ app.delete("/api/usuarios/:id",
   }
 )
 
+// ════════════════════════════════════════════════════════════════════
+// RUTAS TESORERÍA
+// ════════════════════════════════════════════════════════════════════
+
+// ─── Entidades ────────────────────────────────────────────────────
+app.get("/api/tesoro/entidades", auth.requireAuth, (req, res) => {
+  try { res.json(db.tesObtenerEntidades()) }
+  catch (e) { res.status(500).json({ error: "Error al obtener entidades" }) }
+})
+
+app.post("/api/tesoro/entidades", auth.requireAuth, (req, res) => {
+  try {
+    db.tesCrearEntidad(req.body.nombre, req.body.porcentaje || 0)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al crear entidad" }) }
+})
+
+app.put("/api/tesoro/entidades/:id", auth.requireAuth, (req, res) => {
+  try {
+    db.tesActualizarEntidad(req.params.id, req.body.nombre, req.body.porcentaje)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al actualizar entidad" }) }
+})
+
+// ─── Cuentas ──────────────────────────────────────────────────────
+app.get("/api/tesoro/cuentas", auth.requireAuth, (req, res) => {
+  try { res.json(db.tesObtenerCuentas()) }
+  catch (e) { res.status(500).json({ error: "Error al obtener cuentas" }) }
+})
+
+app.post("/api/tesoro/cuentas", auth.requireAuth, (req, res) => {
+  try {
+    db.tesCrearCuenta(req.body.nombre, req.body.tipo)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al crear cuenta" }) }
+})
+
+app.delete("/api/tesoro/cuentas/:id", auth.requireAuth, (req, res) => {
+  try {
+    db.tesEliminarCuenta(req.params.id)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al eliminar cuenta" }) }
+})
+
+// ─── Conceptos ────────────────────────────────────────────────────
+app.get("/api/tesoro/conceptos", auth.requireAuth, (req, res) => {
+  try {
+    const tipo = req.query.tipo || null
+    res.json(db.tesObtenerConceptos(tipo))
+  } catch (e) { res.status(500).json({ error: "Error al obtener conceptos" }) }
+})
+
+app.post("/api/tesoro/conceptos", auth.requireAuth, (req, res) => {
+  try {
+    const { nombre, tipo, entidad_id, aplica_distrito, porcentaje_distrito } = req.body
+    db.tesCrearConcepto(nombre, tipo, entidad_id, aplica_distrito, porcentaje_distrito || 0)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al crear concepto" }) }
+})
+
+app.put("/api/tesoro/conceptos/:id", auth.requireAuth, (req, res) => {
+  try {
+    const { nombre, aplica_distrito, porcentaje_distrito } = req.body
+    db.tesActualizarConcepto(req.params.id, nombre, aplica_distrito, porcentaje_distrito)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al actualizar concepto" }) }
+})
+
+app.delete("/api/tesoro/conceptos/:id", auth.requireAuth, (req, res) => {
+  try {
+    db.tesEliminarConcepto(req.params.id)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al eliminar concepto" }) }
+})
+
+// ─── Movimientos ──────────────────────────────────────────────────
+app.get("/api/tesoro/movimientos", auth.requireAuth, (req, res) => {
+  try {
+    res.json(db.tesObtenerMovimientos(req.query))
+  } catch (e) { res.status(500).json({ error: "Error al obtener movimientos" }) }
+})
+
+app.post("/api/tesoro/movimientos", auth.requireAuth, (req, res) => {
+  try {
+    const fecha = req.body.fecha
+    const mes   = parseInt(fecha.split("-")[1])
+    const anio  = parseInt(fecha.split("-")[0])
+    const datos = { ...req.body, mes, anio }
+    const result = db.tesCrearMovimiento(datos)
+    res.json({ ok: true, id: result.lastInsertRowid })
+  } catch (e) { res.status(500).json({ error: "Error al crear movimiento" }) }
+})
+
+app.put("/api/tesoro/movimientos/:id", auth.requireAuth, (req, res) => {
+  try {
+    const fecha = req.body.fecha
+    const mes   = parseInt(fecha.split("-")[1])
+    const anio  = parseInt(fecha.split("-")[0])
+    db.tesActualizarMovimiento(req.params.id, { ...req.body, mes, anio })
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al actualizar movimiento" }) }
+})
+
+app.delete("/api/tesoro/movimientos/:id", auth.requireAuth, (req, res) => {
+  try {
+    db.tesEliminarMovimiento(req.params.id)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al eliminar movimiento" }) }
+})
+
+// ─── Saldos ───────────────────────────────────────────────────────
+app.get("/api/tesoro/saldos", auth.requireAuth, (req, res) => {
+  try {
+    const { mes, anio } = req.query
+    const entidades = db.tesObtenerEntidades()
+    const cuentas   = db.tesObtenerCuentas()
+    const resultado = []
+
+    for (const entidad of entidades) {
+      const fila = { entidad: entidad.nombre, entidad_id: entidad.id, cuentas: [] }
+      let totalEfectivo = 0
+      let totalBanco    = 0
+
+      for (const cuenta of cuentas) {
+        const saldo = db.tesCalcularSaldo(entidad.id, cuenta.id, mes, anio)
+        fila.cuentas.push({ cuenta: cuenta.nombre, tipo: cuenta.tipo, ...saldo })
+        if (cuenta.tipo === "efectivo") totalEfectivo += saldo.saldo_final
+        else                            totalBanco    += saldo.saldo_final
+      }
+
+      fila.total_efectivo = totalEfectivo
+      fila.total_banco    = totalBanco
+      fila.total          = totalEfectivo + totalBanco
+      resultado.push(fila)
+    }
+
+    res.json(resultado)
+  } catch (e) { res.status(500).json({ error: "Error al calcular saldos" }) }
+})
+
+app.post("/api/tesoro/saldos-iniciales", auth.requireAuth, (req, res) => {
+  try {
+    const { entidad_id, cuenta_id, mes, anio, monto } = req.body
+    db.tesGuardarSaldoInicial(entidad_id, cuenta_id, mes, anio, monto)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al guardar saldo inicial" }) }
+})
+
+// ─── Aportes distritales ──────────────────────────────────────────
+app.get("/api/tesoro/aportes/:anio/:mes", auth.requireAuth, (req, res) => {
+  try {
+    const { mes, anio } = req.params
+    // Primero busca si ya fue guardado
+    const guardado = db.tesObtenerAporte(mes, anio)
+    if (guardado) {
+      res.json(guardado)
+    } else {
+      // Calcula en tiempo real
+      res.json(db.tesCalcularAporte(mes, anio))
+    }
+  } catch (e) { res.status(500).json({ error: "Error al obtener aporte" }) }
+})
+
+app.post("/api/tesoro/aportes/:anio/:mes", auth.requireAuth, (req, res) => {
+  try {
+    const { mes, anio } = req.params
+    db.tesGuardarAporte(mes, anio, req.body)
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al guardar aporte" }) }
+})
+
+// ─── Configuración ────────────────────────────────────────────────
+app.get("/api/tesoro/config", auth.requireAuth, (req, res) => {
+  try { res.json(db.tesObtenerConfig()) }
+  catch (e) { res.status(500).json({ error: "Error al obtener configuración" }) }
+})
+
+app.post("/api/tesoro/config", auth.requireAuth, (req, res) => {
+  try {
+    for (const [clave, valor] of Object.entries(req.body)) {
+      db.tesActualizarConfig(clave, valor)
+    }
+    res.json({ ok: true })
+  } catch (e) { res.status(500).json({ error: "Error al guardar configuración" }) }
+})
+
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en http://localhost:${PORT}`)
 })
