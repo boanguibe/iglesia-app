@@ -28,23 +28,22 @@ function cerrarSesion() {
 
 // ─── Primera ruta accesible según permisos ────────────────────────
 function obtenerPrimeraRuta() {
-  const rol      = obtenerRol()
+  const rol = obtenerRol()
   if (rol === "admin") return "/"
 
   const orden = [
     { permiso: "registros",    ruta: "/" },
     { permiso: "miembros",     ruta: "/miembros.html" },
-    { permiso: "dashboard",    ruta: "/dashboard.html" },
-    { permiso: "estadisticas", ruta: "/estadisticas.html" },
     { permiso: "tesoreria",    ruta: "/tesoreria.html" },
-    { permiso: "usuarios",     ruta: "/usuarios.html" }
+    { permiso: "dashboard",    ruta: "/dashboard.html" },
+    { permiso: "estadisticas", ruta: "/estadisticas.html" }
   ]
 
   for (const item of orden) {
     if (tienePermiso(item.permiso)) return item.ruta
   }
 
-  return null  // sin ningún permiso
+  return null
 }
 
 // ─── Mapa página → permiso ────────────────────────────────────────
@@ -54,7 +53,7 @@ const MAPA_PERMISOS = {
   "/dashboard.html":    "dashboard",
   "/miembros.html":     "miembros",
   "/estadisticas.html": "estadisticas",
-  "/tesoreria.html":    "tesoreria", // ← nuevo
+  "/tesoreria.html":    "tesoreria",
   "/usuarios.html":     "usuarios"
 }
 
@@ -70,14 +69,11 @@ function requireLogin() {
   const permiso = MAPA_PERMISOS[pagina]
 
   if (permiso && !tienePermiso(permiso)) {
-    // No tiene permiso para esta página
-    // Buscar la primera página a la que sí tiene acceso
     const primeraRuta = obtenerPrimeraRuta()
 
     if (primeraRuta && pagina !== primeraRuta) {
       window.location.href = primeraRuta
     } else if (!primeraRuta) {
-      // No tiene ningún permiso → logout
       cerrarSesion()
     }
     return false
@@ -106,6 +102,7 @@ function mostrarUsuario() {
     badge.style.display = "inline"
   }
 
+  // Mostrar/ocultar links del nav según permisos
   const mapaNav = {
     "nav-registros":    "registros",
     "nav-dashboard":    "dashboard",
